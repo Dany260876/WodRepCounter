@@ -1,0 +1,338 @@
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
+/* ==========================================================================
+   1. Variables & Base (Thème Moderne & Sombre discret)
+   ========================================================================== */
+:root {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --text-main: #334155;
+  --text-muted: #64748b;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --danger: #ef4444;
+  --danger-bg: #fee2e2;
+  --radius: 8px;
+  --transition: all 0.2s ease-in-out;
+}
+
+/* ==========================================================================
+   2. Conteneur de Workout (Détails / Accordéon)
+   ========================================================================== */
+.detWorkout {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: var(--transition);
+}
+
+.detWorkout[open] {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.detWorkout summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  background: #f1f5f9;
+  cursor: pointer;
+  user-select: none;
+}
+
+.detWorkout summary::-webkit-details-marker {
+  display: none; /* Cache la flèche par défaut si désiré, ou la laisser */
+}
+
+/* Boutons de suppression (Cross ❌) */
+.spanDeleteWorkout, .spanDeleteAction {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition);
+  font-size: 0.9rem;
+}
+
+.spanDeleteWorkout:hover, .spanDeleteAction:hover {
+  background-color: var(--danger-bg);
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   3. Formulaires & Tableaux (Structure Compacte)
+   ========================================================================== */
+.tblWorkoutContent {
+  width: 100%;
+  border-collapse: collapse;
+  padding: 1rem;
+  display: block; /* Permet un meilleur contrôle responsive */
+}
+
+.tblWorkoutContent > tbody {
+  display: block;
+  padding: 1rem;
+}
+
+.tblWorkoutContent > tbody > tr {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.tblWorkoutContent > tbody > tr:last-child {
+  margin-bottom: 0;
+}
+
+.tblWorkoutContent td {
+  padding: 0;
+  width: 100%;
+}
+
+.tblWorkoutContent td:first-child:not(:empty) {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   4. Liste des Actions (Sous-Tableau)
+   ========================================================================== */
+.tblActionsList {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+}
+
+.trAction {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.trAction td {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  width: auto; /* Annule le width 100% du parent */
+}
+
+/* Ajustements spécifiques des colonnes d'action pour le responsive */
+.tdName { flex: 2 1 100%; order: -1; } /* Nom prend toute la largeur sur mobile pour respirer */
+.tdDelete { flex: 0 0 auto; margin-left: auto; }
+
+.spanActionUnit {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-left: 0.25rem;
+}
+
+/* ==========================================================================
+   5. Inputs & Boutons (Style Moderne)
+   ========================================================================== */
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  background-color: #fff;
+  box-sizing: border-box;
+  transition: var(--transition);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Boutons */
+button {
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: var(--transition);
+  border: none;
+}
+
+.btnAddAction {
+  background: transparent;
+  color: var(--primary);
+  border: 1px dashed var(--primary);
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.btnAddAction:hover {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+/* ==========================================================================
+   6. Media Queries (Passage en mode Desktop / Grand Écran)
+   ========================================================================== */
+@media (min-width: 640px) {
+  /* Aligne les labels "Workout Name" et "Repetitions" à gauche de l'input */
+  .tblWorkoutContent > tbody > tr {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .tblWorkoutContent td:first-child:not(:empty) {
+    flex: 0 0 140px;
+  }
+
+  /* Remet la ligne d'action sur une seule ligne propre */
+  .trAction {
+    flex-wrap: nowrap;
+  }
+  
+  .tdName { order: 0; flex: 2; }
+  .tdType { flex: 1; }
+  .tdCount { flex: 1; }
+  
+  .btnAddAction {
+    width: auto; /* Moins intrusif sur grand écran */
+  }
+}
+
+/* ==========================================================================
+   Ajustement pour l'alignement à gauche et le décrochement parent/enfant
+   ========================================================================== */
+
+/* 1. On cible la ligne qui contient les actions (celle qui a un premier td vide) */
+.tblWorkoutContent > tbody > tr:has(td:first-child:empty) {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+}
+
+/* 2. Le conteneur des actions (la deuxième cellule de cette ligne) */
+.tblWorkoutContent > tbody > tr:has(td:first-child:empty) > td:last-child {
+  width: 100%;
+  padding-left: 1.5rem; /* Le décrochement "enfant" */
+  border-left: 2px solid var(--border-color); /* Une ligne verticale discrète pour appuyer la hiérarchie */
+  box-sizing: border-box;
+}
+
+/* Texte "Actions :" */
+.tblWorkoutContent td:last-child {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Ajustement de la Media Query (Pour éviter le conflit avec le comportement global)
+   ========================================================================== */
+@media (min-width: 640px) {
+  /* On force la ligne des actions à rester en colonne même sur grand écran */
+  .tblWorkoutContent > tbody > tr:has(td:first-child:empty) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* On masque complètement le premier td vide pour éviter qu'il ne prenne de la place */
+  .tblWorkoutContent > tbody > tr > td:first-child:empty {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Conteneur global (Ajustement du padding inférieur)
+   ========================================================================== */
+#divCreateSession {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-main);
+  max-width: 800px;
+  margin: 0 auto;
+  /* On augmente le padding du bas pour éviter que la barre fixe 
+     ne masque le contenu du dernier workout quand on scrolle tout en bas */
+  padding: 1rem 1rem 5.5rem 1rem; 
+  position: relative;
+}
+
+/* ==========================================================================
+   Barre de boutons fixe en bas
+   ========================================================================== */
+.divButtons {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 800px; /* Aligné sur la largeur max de ton composant */
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  
+  /* Flexbox pour mettre côte à côte */
+  display: flex;
+  gap: 0.75rem; /* Espace entre les deux boutons */
+  
+  /* Effet de flou/fond pour détacher la barre du reste du contenu */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px); 
+  border-top: 1px solid var(--border-color);
+  z-index: 100;
+}
+
+/* Base commune pour les boutons de la barre */
+.divButtons button {
+  flex: 1; /* Force les deux boutons à avoir exactement la même largeur (50/50) */
+  padding: 0.65rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  height: 40px; /* Hauteur fixe confortable pour le clic */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Bouton 1 : Add Workout (Style secondaire / plus discret) --- */
+#btnAddWorkout {
+  background: #ffffff;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+#btnAddWorkout:hover {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+/* --- Bouton 2 : Start Session (Style principal / Action forte) --- */
+#btnStartSession {
+  background: #10b981; /* Vert moderne (Success) */
+  color: white;
+  border: none;
+}
+
+#btnStartSession:hover {
+  background: #059669;
+}
