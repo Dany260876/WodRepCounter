@@ -1,15 +1,17 @@
 import { $ } from 'jquery'
 import htmlContent from './createSession.html?raw'
 import htmlBlankWorkout from './blankWorkout.html?raw'
+import sessionService from '../service/sessionService'
+import runSession from './runSession'
 
 export default class createSession {
     constructor() {}
     render() {
         this.initPage();
-        this.initEvents();
     }
     initPage() {
         $('#divCreateSession').html(htmlContent);
+        $('#divCreateSession').show();
         this.addNewWorkout();
     }
     initEvents() {
@@ -17,7 +19,10 @@ export default class createSession {
         $('#btnAddWorkout').click(() => {
             this.addNewWorkout(); 
         });
-
+        $('#btnStartSession').off("click");
+        $('#btnStartSession').click(() => {
+            this.startSession(); 
+        });
         $('.btnAddAction').off("click");
         $('.btnAddAction').click(() => {
             this.addNewAction();
@@ -47,9 +52,9 @@ export default class createSession {
         let btn = event.currentTarget;
         let tableActions = $(btn).siblings('.tblActionsList')[0];
         let html = "<tr class='trAction'>";
-        html += "<td class='tdType'>Type <select class='selActionType'><option value='ACTION'>Action</option><option value='PAUSE'>Pause</option></select></td>";
-        html += "<td class='tdName'>Name <input class='txtActionName' type='text'></input></td>";
-        html += "<td class='tdCount'>Count <input class='txtActionCount' type='number'></input><span class='spanActionUnit'>reps</span></td>";
+        html += "<td class='tdType'>Type <select class='selActionType'><option value='ACTION'>&#9889; Action</option><option value='PAUSE'>&#8987; Pause</option></select></td>";
+        html += "<td class='tdName'>Name <input class='txtActionName' type='text' value='name'></input></td>";
+        html += "<td class='tdCount'>Count <input class='txtActionCount' type='number' value=10></input><span class='spanActionUnit'>reps</span></td>";
         html += "<td class='tdDelete'><span class='spanDeleteAction'>&#10060;</span></td>";
         html += "</tr>";
         $(tableActions).append(html);
@@ -78,5 +83,36 @@ export default class createSession {
         $('input, select').each((i,obj) => { 
             if ($(obj).prop('id')=='') $(obj).prop('id', obj.type+'-'+id+'-'+i);
         });
+    }
+    startSession() {
+        let service = new sessionService();
+        
+        // get data from DOM and build Session data
+        let workouts = $('#divWorkoutList .detWorkout');
+        workouts.each((i, elt) => {
+            let workoutName = $(elt).find('.txtWorkoutName');
+            let workoutReps = $(elt).find('.txtWorkoutReps');
+            let workout = sessionService.createWorkout(workoutName.val(), workoutReps.val());
+            let actionsList = $(elt).find('.tblActionsList .trAction');
+            actionsList.each((i, elt) => {
+                let actionType = $(elt).find('.selActionType');
+                let actionName = $(elt).find('.txtActionName');
+                let actionCount = $(elt).find('.txtActionCount');
+                let action = sessionService.createAction(actionType.val(), actionName.val(), actionCount.val());
+                workout.addItem(action);
+            });
+            service.addWorkout(workout);
+        });
+
+        let errors = service.sessionIsValid();
+        if (errors==null) {
+            // Hide current page and render run session page
+            $('#divCreateSession').hide();
+            let runSessionPage = new runSession(service);
+            runSessionPage.render();   
+        }
+        else {
+            console.log(errors);
+        }
     }
 }

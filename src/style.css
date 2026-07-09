@@ -75,13 +75,12 @@
 .tblWorkoutContent {
   width: 100%;
   border-collapse: collapse;
-  padding: 1rem;
+  padding: 0.5rem;
   display: block; /* Permet un meilleur contrôle responsive */
 }
 
 .tblWorkoutContent > tbody {
   display: block;
-  padding: 1rem;
 }
 
 .tblWorkoutContent > tbody > tr {
@@ -236,7 +235,7 @@ button {
 /* 2. Le conteneur des actions (la deuxième cellule de cette ligne) */
 .tblWorkoutContent > tbody > tr:has(td:first-child:empty) > td:last-child {
   width: 100%;
-  padding-left: 1.5rem; /* Le décrochement "enfant" */
+  padding-left: 0.5rem; /* Le décrochement "enfant" */
   border-left: 2px solid var(--border-color); /* Une ligne verticale discrète pour appuyer la hiérarchie */
   box-sizing: border-box;
 }
@@ -335,4 +334,153 @@ button {
 
 #btnStartSession:hover {
   background: #059669;
+}
+
+/***********************************************************************************/
+/* RUN SESSION PAGE
+/***********************************************************************************/
+
+/* --- Conteneur Principal --- */
+#runSessionContent {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Aligne le haut, le milieu et le bas */
+    align-items: center;
+    text-align: center;
+}
+
+/* --- 1. En-tête : Séance & Progression --- */
+.pCurrentWorkout {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+#spanWorkoutMaxReps, #spanCurrentWorkoutRep {
+    font-weight: bold;
+    color: var(--text-main);
+}
+
+/* --- 2. Focus Central : L'exercice en cours --- */
+.pCurrentAction {
+    background: var(--card-bg);
+    border: 2px solid #2a2a30;
+    border-radius: var(--radius);
+    padding: 30px 20px;
+    width: 100%;
+    max-width: 400px;
+    margin: auto 0; /* Centre verticalement dans l'espace disponible */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+#spanActionName {
+    display: block;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+}
+#spanActionReps, #spanActionUnit {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* --- 3. Le Bouton d'action "OK" --- */
+#btnRunSessionStepOK {
+    background-color: var(--primary-color);
+    color: #000000;
+    border: none;
+    border-radius: 50px; /* Bouton bien rond */
+    padding: 18px 60px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.4);
+    transition: transform 0.1s ease, background-color 0.2s ease;
+    width: 100%;
+    max-width: 300px;
+}
+#btnRunSessionStepOK:active {
+    transform: scale(0.96); /* Effet de pression sur mobile */
+    background-color: var(--primary-hover);
+}
+
+/* --- 4. Le prochain exercice --- */
+.pNextAction {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin: 20px 0 0 0;
+    background: rgba(255, 179, 0, 0.1);
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: 1px dashed rgba(255, 179, 0, 0.3);
+}
+#spanNextActionName, #spanNextActionReps, #spanNextActionUnit {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+
+/* ==========================================================================
+   Adaptation pour le mode PAYSAGE (Landscape) sur Mobile
+   ========================================================================== */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    #runSessionContent {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Sépare l'écran en deux colonnes */
+        grid-template-rows: auto 1fr auto;
+        gap: 10px 20px;
+        padding: 15px;
+        height: 100vh;
+    }
+
+    /* L'en-tête prend toute la largeur en haut */
+    .pCurrentWorkout {
+        grid-column: 1 / -0.55;
+        margin: 0;
+    }
+
+    /* L'exercice actuel à gauche */
+    .pCurrentAction {
+        grid-column: 1;
+        margin: 0;
+        padding: 1px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+    #spanActionName { font-size: 1.6rem; }
+    #spanActionReps, #spanActionUnit { font-size: 1.4rem; }
+
+    /* Le bouton OK passe à droite */
+    #runSessionContent > p:has(#btnRunSessionStepOK) {
+        grid-column: 2;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #btnRunSessionStepOK {
+        padding: 15px 40px;
+        font-size: 1.3rem;
+    }
+
+    /* L'exercice suivant prend toute la largeur en bas */
+    .pNextAction {
+        grid-column: 1 / -1;
+        margin: 0;
+        padding: 5px 15px;
+        font-size: 0.9rem;
+    }
 }
