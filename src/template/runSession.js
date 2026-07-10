@@ -37,16 +37,16 @@ export default class runSession {
 
         // init workout fields value
         let spanWorkoutName = $('#runSessionContent').find('#spanWorkoutName');
-        spanWorkoutName.text(this.currentWorkout.name);
+        spanWorkoutName.text(this.currentWorkout.getName());
         let spanWorkoutMaxReps = $('#runSessionContent').find('#spanWorkoutMaxReps');
         spanWorkoutMaxReps.text(this.currentWorkout.reps);
         let spanCurrentWorkoutRep = $('#runSessionContent').find('#spanCurrentWorkoutRep');
         spanCurrentWorkoutRep.text(this.workoutRepNumber);
 
         // init action fields value
+        let valUnit = this.sessionService.getItemValueAndUnit(this.currentItem);
         let spanActionName = $('#runSessionContent').find('#spanActionName');
-        spanActionName.text(this.currentItem.name);
-        let valUnit = this.getItemValueAndUnit(this.currentItem);
+        spanActionName.html(valUnit.icon + ' ' + this.currentItem.getName());
         let spanActionReps = $('#runSessionContent').find('#spanActionReps');
         spanActionReps.text(valUnit.value);
         let spanActionUnit = $('#runSessionContent').find('#spanActionUnit');
@@ -59,8 +59,8 @@ export default class runSession {
         let spanNextIcon = $('#runSessionContent').find('#spanNextIcon');
         let nextItem = this.getNextItem();
         if (nextItem!=null) {
-            spanNextActionName.text(nextItem.name);
-            let valUnitNext = this.getItemValueAndUnit(nextItem);
+            spanNextActionName.text(nextItem.getName());
+            let valUnitNext = this.sessionService.getItemValueAndUnit(nextItem);
             spanNextActionReps.text(valUnitNext.value);
             spanNextActionUnit.text(valUnitNext.unit);
             spanNextIcon.html(valUnitNext.icon);
@@ -68,6 +68,25 @@ export default class runSession {
         else {
             $('.pNextAction').html('&#127942; End of session');
         }
+
+        // Start Counter for pause
+        if (this.currentItem.type.toUpperCase()=='PAUSE') {
+            this.startTimer(valUnit.value);
+        }
+    }
+    startTimer(seconds) {
+        $('#btnRunSessionStepOK').text('Wait...');
+        $('#btnRunSessionStepOK').attr('disabled','disabled');
+        let val = seconds;
+        this.timerPause = window.setInterval(() => {
+            val--;
+            $('#spanActionReps').text(val);
+            if (val==0) {
+                $('#btnRunSessionStepOK').text('OK');
+                $('#btnRunSessionStepOK').removeAttr('disabled');
+                window.clearInterval(this.timerPause);
+            }
+        }, 1000);
     }
     getNextItem() {
         let result = this.currentWorkout.getItem(this.indexItem+1);
@@ -84,20 +103,6 @@ export default class runSession {
                 }
                 return null; // no next item
             }
-        }
-        return result;
-    }
-    getItemValueAndUnit(item) {
-        let result = {};
-        if (item.type=='ACTION') {
-            result.value = item.reps;
-            result.unit = 'reps';
-            result.icon = '&#9889;';
-        }
-        if (item.type=='PAUSE') {
-            result.value = item.duration;
-            result.unit = 'seconds';
-            result.icon = '&#8987;';
         }
         return result;
     }

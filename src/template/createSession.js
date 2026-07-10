@@ -1,4 +1,6 @@
 import { $ } from 'jquery'
+import saveIconContent from '../assets/save.svg?raw';
+import loadIconContent from '../assets/load.svg?raw';
 import htmlContent from './createSession.html?raw'
 import htmlBlankWorkout from './blankWorkout.html?raw'
 import sessionService from '../service/sessionService'
@@ -12,9 +14,15 @@ export default class createSession {
     initPage() {
         $('#divCreateSession').html(htmlContent);
         $('#divCreateSession').show();
+        $('.btn-save').html(saveIconContent);
+        $('.btn-load').html(loadIconContent);
         this.addNewWorkout();
     }
     initEvents() {
+        $('#btnCreationDialogOK').off("click");
+        $('#btnCreationDialogOK').click(() => {
+             $('#dlgCreationDialog')[0].close();
+        });
         $('#btnAddWorkout').off("click");
         $('#btnAddWorkout').click(() => {
             this.addNewWorkout(); 
@@ -27,23 +35,21 @@ export default class createSession {
         $('.btnAddAction').click(() => {
             this.addNewAction();
         });
-        
         $('.selActionType').off("change");
         $('.selActionType').change(() => {
             this.changeActionType();
-        });
-        
+        });        
         $('.spanDeleteAction').off("click");
         $('.spanDeleteAction').click(() => {
             this.deleteAction();
         });
-        
         $('.spanDeleteWorkout').off("click");
         $('.spanDeleteWorkout').click(() => {
             this.deleteWorkout();
         });
     }
     addNewWorkout() {
+        $('.detWorkout').removeAttr('open');
         $('#divWorkoutList').append(htmlBlankWorkout);
         this.initEvents();
         this.setObjectsId();
@@ -65,8 +71,15 @@ export default class createSession {
         let selType = event.currentTarget;
         let trParent = $(selType).parents('.trAction');
         let spanUnite = $(trParent).find('.spanActionUnit');
-        if (selType.value=='ACTION') $(spanUnite).text('reps');
-        if (selType.value=='PAUSE') $(spanUnite).text('seconds');
+        let tdName = $(trParent).find('.tdName');
+        if (selType.value=='ACTION') {
+            $(spanUnite).text('reps');
+            $(tdName).show();
+        }
+        if (selType.value=='PAUSE') {
+            $(spanUnite).text('seconds');
+            $(tdName).hide();
+        }
     }
     deleteAction() {
         let src = event.currentTarget;
@@ -112,7 +125,8 @@ export default class createSession {
             runSessionPage.render();   
         }
         else {
-            console.log(errors);
+            $('#spanCreationDialogMessage').text(errors);
+            $('#dlgCreationDialog')[0].showModal();
         }
     }
 }

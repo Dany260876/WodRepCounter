@@ -3,4 +3,7 @@ export default class item {
         this.type = type;
         this.name = name;
     }
+    getName() {
+        return this.name[0].toUpperCase()+this.name.substr(1);
+    }
 }

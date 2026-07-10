@@ -405,7 +405,7 @@ button {
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.4);
+    box-shadow: 0 5px 15px rgb(39 41 50 / 40%);
     transition: transform 0.1s ease, background-color 0.2s ease;
     width: 100%;
     max-width: 300px;
@@ -413,6 +413,9 @@ button {
 #btnRunSessionStepOK:active {
     transform: scale(0.96); /* Effet de pression sur mobile */
     background-color: var(--primary-hover);
+}
+#btnRunSessionStepOK:disabled {
+  color: lightgray;
 }
 
 /* --- 4. Le prochain exercice --- */
@@ -460,7 +463,7 @@ button {
         justify-content: center;
         height: 100%;
     }
-    #spanActionName { font-size: 1.6rem; }
+    #spanActionName, #spanActionIcon { font-size: 1.6rem; }
     #spanActionReps, #spanActionUnit { font-size: 1.4rem; }
 
     /* Le bouton OK passe à droite */
@@ -483,4 +486,180 @@ button {
         padding: 5px 15px;
         font-size: 0.9rem;
     }
+}
+
+/* Variables pour personnaliser facilement les couleurs et arrondis */
+:root {
+  --modal-bg: #ffffff;
+  --modal-text: #2d3748;
+  --modal-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --backdrop-bg: rgba(0, 0, 0, 0.4);
+  --btn-primary: #3182ce;
+  --btn-primary-hover: #2b6cb0;
+  --btn-text: #ffffff;
+  --radius: 12px;
+}
+
+/* Style de la boîte de dialogue (modal) */
+#dlgCreationDialog {
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--modal-shadow);
+  background-color: var(--modal-bg);
+  color: var(--modal-text);
+  padding: 24px;
+  
+  /* MODIFICATION ICI : Gestion du responsive sur petit écran */
+  width: 100%;
+  max-width: calc(100% - 32px); /* Laisse 16px d'espace libre à gauche et à droite */
+  box-sizing: border-box;       /* Évite que le padding ne déforme la largeur */
+  
+  /* Centre le modal à l'écran de base avec l'API native */
+  margin: auto;
+  
+  /* Animation d'apparition douce */
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Style du texte à l'intérieur */
+.pDialog {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Style du bouton moderne */
+.btnDialog {
+  display: block;
+  width: 100%; /* S'adapte bien sur mobile */
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--btn-text);
+  background-color: var(--btn-primary);
+  border: none;
+  border-radius: calc(var(--radius) - 4px);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* États du bouton (survol et clic) */
+.btnDialog:hover {
+  background-color: var(--btn-primary-hover);
+}
+
+.btnDialog:active {
+  transform: scale(0.98);
+}
+
+/* Arrière-plan flouté (Backdrop) natif à l'API <dialog> */
+#dlgCreationDialog::backdrop {
+  background-color: var(--backdrop-bg);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Petite animation d'ouverture */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ajustement pour les écrans plus grands (Tablettes/PC) */
+@media (min-width: 480px) {
+  #dlgCreationDialog {
+    max-width: 450px; /* Reprend sa taille maximale dès que l'écran est assez grand */
+    padding: 32px;
+  }
+
+  .btnDialog {
+    width: auto;
+    min-width: 120px;
+    margin-left: auto; /* Aligne le bouton à droite sur écran large */
+  }
+}
+
+#divToolBarCreate {
+  /* Docké en haut de l'écran de manière fixe */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  /* Alignement horizontal compact */
+  display: flex;
+  justify-content: flex-end; /* Aligne les boutons à droite (plus naturel pour les droitiers) */
+  gap: 0.75rem;
+  
+  /* Taille réduite pour le mobile */
+  padding: 0.5rem 1rem;
+  height: 3.5rem; /* Évite de prendre trop de place verticale */
+  box-sizing: border-box;
+
+  /* Fond blanc pur avec une ombre fine pour se détacher du formulaire */
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Style de base des boutons d'action */
+.spanToolbarItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  cursor: pointer;
+  border-radius: 50%; /* Boutons ronds pour un look d'application mobile */
+  transition: all 0.2s ease;
+}
+
+/* --- MISE EN VALEUR DES BOUTONS --- */
+
+/* Bouton Sauvegarder : Thème Vert */
+.spanToolbarItem.btn-save {
+  background-color: #f0fdf4; /* Fond vert très clair */
+  color: #16a34a; /* Icône verte */
+  border: 1px solid #bbf7d0;
+}
+
+.spanToolbarItem.btn-save:hover {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+/* Bouton Charger : Thème Bleu */
+.spanToolbarItem.btn-load {
+  background-color: #eff6ff; /* Fond bleu très clair */
+  color: #2563eb; /* Icône bleue */
+  border: 1px solid #bfdbfe;
+}
+
+.spanToolbarItem.btn-load:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Effet de pression sur mobile */
+.spanToolbarItem:active {
+  transform: scale(0.92);
+}
+
+/* --- ASTUCE POUR LE CONTENU DU DESSOUS --- */
+
+/* Applique cette classe ou cette règle sur le conteneur de ton formulaire 
+   pour éviter que la toolbar ne cache les premiers champs de saisie */
+body, .main-content {
+  padding-top: 4rem; /* Un peu plus que la hauteur de la toolbar (3.5rem) */
 }

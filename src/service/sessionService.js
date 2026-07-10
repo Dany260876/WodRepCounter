@@ -28,4 +28,18 @@ export default class sessionService {
     getWorkout(index) {
         return this.session.getWorkout(index);
     }
+    getItemValueAndUnit(item) {
+        let result = {};
+        if (item.type=='ACTION') {
+            result.value = item.reps;
+            result.unit = 'reps';
+            result.icon = '&#9889;';
+        }
+        if (item.type=='PAUSE') {
+            result.value = item.duration;
+            result.unit = 'seconds';
+            result.icon = '&#8987;';
+        }
+        return result;
+    }
 }
