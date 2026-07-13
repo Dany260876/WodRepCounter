@@ -62,6 +62,7 @@
   border-radius: 4px;
   transition: var(--transition);
   font-size: 0.9rem;
+  color: #d95454;
 }
 
 .spanDeleteWorkout:hover, .spanDeleteAction:hover {
@@ -273,7 +274,7 @@ button {
   margin: 0 auto;
   /* On augmente le padding du bas pour éviter que la barre fixe 
      ne masque le contenu du dernier workout quand on scrolle tout en bas */
-  padding: 1rem 1rem 5.5rem 1rem; 
+  padding: 4rem 1rem 5.5rem 1rem; 
   position: relative;
 }
 
@@ -501,23 +502,17 @@ button {
 }
 
 /* Style de la boîte de dialogue (modal) */
-#dlgCreationDialog {
+.dlgDialog {
   border: none;
   border-radius: var(--radius);
   box-shadow: var(--modal-shadow);
   background-color: var(--modal-bg);
   color: var(--modal-text);
   padding: 24px;
-  
-  /* MODIFICATION ICI : Gestion du responsive sur petit écran */
   width: 100%;
   max-width: calc(100% - 32px); /* Laisse 16px d'espace libre à gauche et à droite */
   box-sizing: border-box;       /* Évite que le padding ne déforme la largeur */
-  
-  /* Centre le modal à l'écran de base avec l'API native */
   margin: auto;
-  
-  /* Animation d'apparition douce */
   animation: fadeIn 0.25s ease-out;
 }
 
@@ -556,8 +551,12 @@ button {
   transform: scale(0.98);
 }
 
+#btnDialogSaveSession {
+  background-color: #10b981;
+}
+
 /* Arrière-plan flouté (Backdrop) natif à l'API <dialog> */
-#dlgCreationDialog::backdrop {
+.dlgDialog::backdrop {
   background-color: var(--backdrop-bg);
   backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease-out;
@@ -577,7 +576,7 @@ button {
 
 /* Ajustement pour les écrans plus grands (Tablettes/PC) */
 @media (min-width: 480px) {
-  #dlgCreationDialog {
+  .dlgDialog {
     max-width: 450px; /* Reprend sa taille maximale dès que l'écran est assez grand */
     padding: 32px;
   }
@@ -651,15 +650,19 @@ button {
   color: #ffffff;
 }
 
+/* Bouton Charger : Thème Gris */
+.spanToolbarItem.btn-settings {
+  background-color: #e6e6e6de; /* Fond bleu très clair */
+  color: #666666; /* Icône bleue */
+  border: 1px solid #d9d9d9;
+}
+
+.spanToolbarItem.btn-settings:hover {
+  background-color: #7c7c7c;
+  color: #ffffff;
+}
+
 /* Effet de pression sur mobile */
 .spanToolbarItem:active {
   transform: scale(0.92);
-}
-
-/* --- ASTUCE POUR LE CONTENU DU DESSOUS --- */
-
-/* Applique cette classe ou cette règle sur le conteneur de ton formulaire 
-   pour éviter que la toolbar ne cache les premiers champs de saisie */
-body, .main-content {
-  padding-top: 4rem; /* Un peu plus que la hauteur de la toolbar (3.5rem) */
 }

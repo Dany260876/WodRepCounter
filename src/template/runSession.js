@@ -1,5 +1,6 @@
 import { $ } from 'jquery'
 import htmlContent from './runSession.html?raw'
+import iconEndSession from '../assets/trophy.svg?raw'
 
 export default class runSession {
     constructor(service) {

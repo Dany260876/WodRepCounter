@@ -1,8 +1,14 @@
 import { $ } from 'jquery'
+
 import saveIconContent from '../assets/save.svg?raw';
 import loadIconContent from '../assets/load.svg?raw';
+import settingsIconContent from '../assets/settings.svg?raw';
+import deleteIconContent from '../assets/circle-x.svg?raw';
+import alertIcon from '../assets/alert.svg?raw';
+
 import htmlContent from './createSession.html?raw'
 import htmlBlankWorkout from './blankWorkout.html?raw'
+
 import sessionService from '../service/sessionService'
 import runSession from './runSession'
 
@@ -16,6 +22,7 @@ export default class createSession {
         $('#divCreateSession').show();
         $('.btn-save').html(saveIconContent);
         $('.btn-load').html(loadIconContent);
+        $('.btn-settings').html(settingsIconContent);
         this.addNewWorkout();
     }
     initEvents() {
@@ -47,10 +54,19 @@ export default class createSession {
         $('.spanDeleteWorkout').click(() => {
             this.deleteWorkout();
         });
+        $('.btn-save').off("click");
+        $('.btn-save').click(() => {
+            this.saveSession();
+        });
+        $('#btnDialogOK').off("click");
+        $('#btnDialogOK').click(() => {
+             $('#mainDialog')[0].close();
+        });
     }
     addNewWorkout() {
         $('.detWorkout').removeAttr('open');
         $('#divWorkoutList').append(htmlBlankWorkout);
+        $('.spanDeleteWorkout').html(deleteIconContent);
         this.initEvents();
         this.setObjectsId();
     }
@@ -58,10 +74,10 @@ export default class createSession {
         let btn = event.currentTarget;
         let tableActions = $(btn).siblings('.tblActionsList')[0];
         let html = "<tr class='trAction'>";
-        html += "<td class='tdType'>Type <select class='selActionType'><option value='ACTION'>&#9889; Action</option><option value='PAUSE'>&#8987; Pause</option></select></td>";
+        html += "<td class='tdType'>Type <select class='selActionType'><option value='ACTION'>&#9889; Action</option><option value='PAUSE'>&#128343; Pause</option></select></td>";
         html += "<td class='tdName'>Name <input class='txtActionName' type='text' value='name'></input></td>";
         html += "<td class='tdCount'>Count <input class='txtActionCount' type='number' value=10></input><span class='spanActionUnit'>reps</span></td>";
-        html += "<td class='tdDelete'><span class='spanDeleteAction'>&#10060;</span></td>";
+        html += "<td class='tdDelete'><span class='spanDeleteAction'>" + deleteIconContent + "</span></td>";
         html += "</tr>";
         $(tableActions).append(html);
         this.initEvents();
@@ -97,10 +113,8 @@ export default class createSession {
             if ($(obj).prop('id')=='') $(obj).prop('id', obj.type+'-'+id+'-'+i);
         });
     }
-    startSession() {
-        let service = new sessionService();
-        
-        // get data from DOM and build Session data
+    buildSessionFromDOM(service) {
+         // get data from DOM and build Session data
         let workouts = $('#divWorkoutList .detWorkout');
         workouts.each((i, elt) => {
             let workoutName = $(elt).find('.txtWorkoutName');
@@ -116,7 +130,31 @@ export default class createSession {
             });
             service.addWorkout(workout);
         });
-
+    }
+    saveSession() {
+        let html = "";
+        let service = new sessionService();
+        this.buildSessionFromDOM(service);
+        let errors = service.sessionIsValid();
+        if (errors==null) {
+            html = "<p>Session name <input type='text' id='txtSaveSessionName'></input></p>";
+            html += "<button class='btnDialog' id='btnDialogSaveSession'>Save session</button>";
+            html += "<hr/>";
+        }
+        else {
+            html = "Current session contains errors and can't be saved (" + errors + ")";
+        }
+        $('#spanDialogContent').html(html);
+        $('#btnDialogSaveSession').off('click');
+        $('#btnDialogSaveSession').click(() => {
+            $('#spanDialogContent').html("Session saved.");
+        });
+        $('#mainDialog')[0].showModal();
+    }
+    startSession() {
+        let service = new sessionService();
+        this.buildSessionFromDOM(service);
+        
         let errors = service.sessionIsValid();
         if (errors==null) {
             // Hide current page and render run session page
@@ -125,7 +163,8 @@ export default class createSession {
             runSessionPage.render();   
         }
         else {
-            $('#spanCreationDialogMessage').text(errors);
+            let html = alertIcon + " ERROR <br/>" + errors;
+            $('#spanCreationDialogMessage').html(html);
             $('#dlgCreationDialog')[0].showModal();
         }
     }

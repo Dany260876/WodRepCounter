@@ -2,6 +2,8 @@ import session from '../class/session'
 import workout from '../class/workout'
 import action from '../class/action'
 import pause from '../class/pause'
+import iconPause from '../assets/clock.svg?raw'
+import iconAction from '../assets/zap.svg?raw'
 
 export default class sessionService {
     constructor() {
@@ -33,12 +35,12 @@ export default class sessionService {
         if (item.type=='ACTION') {
             result.value = item.reps;
             result.unit = 'reps';
-            result.icon = '&#9889;';
+            result.icon = iconAction;  
         }
         if (item.type=='PAUSE') {
             result.value = item.duration;
             result.unit = 'seconds';
-            result.icon = '&#8987;';
+            result.icon = iconPause; 
         }
         return result;
     }
