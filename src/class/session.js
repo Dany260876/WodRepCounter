@@ -3,6 +3,7 @@ export default class session {
         this.startDate = new Date();
         this.workoutList = [];
         this.duration = 0;
+        this.name = '';
     }
     addWorkout(workout) {
         this.workoutList.push(workout);

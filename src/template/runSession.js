@@ -1,6 +1,7 @@
 import { $ } from 'jquery'
 import htmlContent from './runSession.html?raw'
 import iconEndSession from '../assets/trophy.svg?raw'
+import eventService from '../service/eventService';
 
 export default class runSession {
     constructor(service) {
@@ -21,12 +22,11 @@ export default class runSession {
         this.showCurrentStep();
     }
     initEvents() {
-        $('#btnRunSessionStepOK').off('click');
-        $('#btnRunSessionStepOK').click(() => {
+        eventService.eventClick('#btnRunSessionStepOK', () => {
             if (this.setNextStep()) 
                 this.showCurrentStep();
             else 
-                this.endWorkout();               
+                this.endWorkout();
         });
     }
     showCurrentStep() {        

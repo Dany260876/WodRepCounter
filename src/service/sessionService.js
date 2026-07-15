@@ -1,3 +1,6 @@
+import { $ } from 'jquery';
+import localforage from 'localforage';
+
 import session from '../class/session'
 import workout from '../class/workout'
 import action from '../class/action'
@@ -43,5 +46,66 @@ export default class sessionService {
             result.icon = iconPause; 
         }
         return result;
+    }
+    saveSession(name) {
+        const res = $.Deferred();
+        if (name.trim()!='') {
+            this.session.name = name;
+            // get saved sessions & add new
+            localforage.getItem('savedSessions').then((value) => {
+                if (value==null) value = [];
+                value.push(this.session);
+                localforage.setItem('savedSessions', value).then((obj) => {
+                    res.resolve("Session '" + name + "' saved.");
+                }).catch((err) => {
+                    res.reject(err);
+                });
+            }).catch((err) => {
+                res.reject(err);
+            });
+        }
+        else
+            res.reject('invalid name');
+
+        return res.promise();
+    }
+    static getSavedSessions() {
+        const res = $.Deferred();
+        // get saved sessions
+        localforage.getItem('savedSessions').then((value) => {
+            if (value==null) value = [];
+            res.resolve(value);
+        }).catch((err) => {
+            res.reject(err);
+        });
+        return res.promise();
+    }
+    static removeSavedSession(name) {
+        const res = $.Deferred();
+        
+        if (name.trim()!='') {
+            // get saved sessions & remove selected
+            localforage.getItem('savedSessions').then((values) => {
+                if (values!=null) {                  
+                    // remove item by name
+                    let index = values.findIndex((val) => val.name==name);
+                    if (index>-1) {
+                        values.splice(index, 1);
+                    }
+                    // Save content
+                    localforage.setItem('savedSessions', values).then((obj) => {
+                        res.resolve("Session '" + name + "' saved.");
+                    }).catch((err) => {
+                        res.reject(err);
+                    });  
+                } 
+            }).catch((err) => {
+                res.reject(err);
+            });
+        }
+        else
+            res.reject('invalid name');
+        
+        return res.promise();
     }
 }
