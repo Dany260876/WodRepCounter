@@ -80,6 +80,31 @@ export default class sessionService {
         });
         return res.promise();
     }
+    static getSavedSessionByName(name) {
+        const res = $.Deferred();
+        
+        if (name.trim()!='') {
+            // get saved sessions
+            localforage.getItem('savedSessions').then((values) => {
+                if (values!=null) {                  
+                    // get item by name
+                    let index = values.findIndex((val) => val.name==name);
+                    if (index>-1) 
+                        res.resolve(values[index]);
+                    else
+                        res.resolve(null);
+                }
+                else
+                    res.resolve(null);
+            }).catch((err) => {
+                res.reject(err);
+            });
+        }
+        else
+            res.reject('invalid name');
+        
+        return res.promise();
+    }
     static removeSavedSession(name) {
         const res = $.Deferred();
         

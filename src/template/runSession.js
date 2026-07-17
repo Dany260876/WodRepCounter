@@ -2,6 +2,7 @@ import { $ } from 'jquery'
 import htmlContent from './runSession.html?raw'
 import iconEndSession from '../assets/trophy.svg?raw'
 import eventService from '../service/eventService';
+import reportSession from './reportSession';
 
 export default class runSession {
     constructor(service) {
@@ -86,6 +87,7 @@ export default class runSession {
                 $('#btnRunSessionStepOK').text('OK');
                 $('#btnRunSessionStepOK').removeAttr('disabled');
                 window.clearInterval(this.timerPause);
+                $('#btnRunSessionStepOK').click();
             }
         }, 1000);
     }
@@ -130,7 +132,18 @@ export default class runSession {
         return this.setNextStep();
     }
     endWorkout() {
+        // clean & hide
+        $('#divRunSession').html('');
         $('#divRunSession').hide();
-        console.log('end !');
+
+        // get session duration (seconds)
+        let startDate = new Date(this.sessionService.session.startDate).getTime();
+        let durationSec = (new Date().getTime() - startDate)/1000;
+        this.sessionService.session.duration = durationSec;
+        this.sessionService.session.name = "Session - " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
+        
+        // Render report
+        let report = new reportSession(this.sessionService);
+        report.render();
     }
 }

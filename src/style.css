@@ -163,6 +163,10 @@ select {
   transition: var(--transition);
 }
 
+input[type="number"] {
+  width: 80px;
+}
+
 input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus {
@@ -358,7 +362,7 @@ button {
 
 /* --- 1. En-tête : Séance & Progression --- */
 .pCurrentWorkout {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     color: var(--text-muted);
     font-weight: 500;
     margin: 0 0 10px 0;
@@ -667,10 +671,22 @@ button {
   transform: scale(0.92);
 }
 
+/* Items list */
 .listItemRow {
   text-align: left;
 }
-
+.listItemText {
+  font-size: 14px;
+}
+.listItemTextSmall {
+  font-size: 10px;
+}
+.tdItemText {
+  width: 80%;
+}
+.tdItemSelector {
+  width: 10%;
+}
 .tblItemsList {
   width: 100%;
   height: 10em;

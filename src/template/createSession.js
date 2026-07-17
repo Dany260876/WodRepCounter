@@ -39,23 +39,59 @@ export default class createSession {
         eventService.eventClick('.btn-load', () => this.loadSession());
         eventService.eventChange('.selActionType', () => this.changeActionType());
     }
+    getWorkoutHtml(workout) {
+        let name = 'workout name';
+        let value = '5';
+        if (workout) {
+            name = workout.name;
+            value = workout.reps;
+        }
+        let html = htmlBlankWorkout;
+        html = html.replaceAll("[WORKOUT_NAME]", name).replaceAll("[WORKOUT_VALUE]", value);
+        return html;
+    }
     addNewWorkout() {
         $('.detWorkout').removeAttr('open');
-        $('#divWorkoutList').append(htmlBlankWorkout);
+        $('#divWorkoutList').append(this.getWorkoutHtml(null));
         $('.spanDeleteWorkout').html(deleteIconContent);
         this.initEvents();
         this.setObjectsId();
     }
+    getNewActionHtml(action) {
+        let html = "<tr class='trAction'>";
+
+        // defaults values
+        let name = 'name';
+        let value = 10;
+        let unit = "reps";
+        let selectedAction='selected';
+        let selectedPause='';
+
+        // values from action
+        if (action) {
+            name = action.name;
+            if (action.duration) {
+                value = action.duration;
+                unit = "seconds";
+                selectedAction = '';
+                selectedPause = 'selected';
+            }
+            if (action.reps) { 
+                value = action.reps;
+            }                
+        }
+        html += "<td class='tdType'><select class='selActionType'><option value='ACTION' " + selectedAction + ">&#9889; Action</option><option value='PAUSE' " + selectedPause + ">&#128343; Pause</option></select></td>";
+        html += "<td class='tdName'><input class='txtActionName' type='text' value='" + name + "'></input></td>";
+        html += "<td class='tdCount'><input class='txtActionCount' type='number' value=" + value + "></input><span class='spanActionUnit'>" + unit + "</span></td>";        
+        html += "<td class='tdDelete'><span class='spanDeleteAction'>" + deleteIconContent + "</span></td>";
+        html += "</tr>";
+        
+        return html;
+    }
     addNewAction() {
         let btn = event.currentTarget;
         let tableActions = $(btn).siblings('.tblActionsList')[0];
-        let html = "<tr class='trAction'>";
-        html += "<td class='tdType'>Type <select class='selActionType'><option value='ACTION'>&#9889; Action</option><option value='PAUSE'>&#128343; Pause</option></select></td>";
-        html += "<td class='tdName'>Name <input class='txtActionName' type='text' value='name'></input></td>";
-        html += "<td class='tdCount'>Count <input class='txtActionCount' type='number' value=10></input><span class='spanActionUnit'>reps</span></td>";
-        html += "<td class='tdDelete'><span class='spanDeleteAction'>" + deleteIconContent + "</span></td>";
-        html += "</tr>";
-        $(tableActions).append(html);
+        $(tableActions).append(this.getNewActionHtml(null));
         this.initEvents();
         this.setObjectsId();
     }
@@ -130,6 +166,40 @@ export default class createSession {
         
         $('#mainDialog')[0].showModal();
     }
+    restoreSession(name) {
+        const res = $.Deferred();
+        
+        sessionService.getSavedSessionByName(name).done((session) => {
+            if (session!=null) {
+                $('#divWorkoutList').html(''); // reset htmlContent
+
+                // build new content
+                session.workoutList.forEach((obj) => {
+                    // Add blank workout
+                    $('.detWorkout').removeAttr('open');
+                    $('#divWorkoutList').append(this.getWorkoutHtml(obj));
+                    // Set workout values
+                    let workout = $('#divWorkoutList .detWorkout:last-child');
+                    let tableActions = workout.find('.tblActionsList');
+                    // Add actions
+                    obj.items.forEach((item) => {
+                        let html = this.getNewActionHtml(item);
+                        tableActions.append(html);
+                    });
+                });
+
+                // init icons
+                $('.spanDeleteWorkout').html(deleteIconContent);
+                
+                // init events & object ids
+                this.initEvents();
+                this.setObjectsId();
+            }
+            res.resolve();
+        });
+        
+        return res;
+    }
     loadSession() {
         sessionService.getSavedSessions().done((sessions) => {
             if (sessions.length>0) {
@@ -139,8 +209,8 @@ export default class createSession {
                     let exQty = 0;
                     objSession.workoutList.forEach((w) => exQty+=w.items.length);
                     html += "<tr class='listItemRow'>";
-                    html += "<td><input type='radio' name='sessionSelect' value='" + objSession.name + "'" + checked + "/></td>";
-                    html += "<td>" + objSession.name + " (" + objSession.workoutList.length + " Workouts / " + exQty + " Exercices)</td>";
+                    html += "<td class='tdItemSelector'><input type='radio' name='sessionSelect' value='" + objSession.name + "'" + checked + "/></td>";
+                    html += "<td class='tdItemText'><span class='listItemText'>" + objSession.name + "</span><br/><span class='listItemTextSmall'>" + objSession.workoutList.length + " Workouts / " + exQty + " Exercices</span></td>";
                     html += "<td><span class='spanDeleteSavedSession' data-id='" + objSession.name + "'>" + deleteIconContent + "</span></td>";
                     html += "</tr>";
                     checked = "";
@@ -156,6 +226,23 @@ export default class createSession {
                             this.loadSession();
                         })
                         .fail((err) => console.log(err));
+                });
+
+                eventService.eventClick('#btnDialogLoadSession', (e) => {
+                    let elts = $('.tblItemsList').find('.tdItemSelector');
+                    let selectedValue = '';
+                    elts.each((i,obj) => { 
+                        let radio = $(obj).find('input');
+                        if ($(radio).prop('checked')) {
+                            selectedValue = $(radio).val();
+                            return false;
+                        }
+                    });
+                    if (selectedValue!='') {
+                        this.restoreSession(selectedValue).always(() => {
+                            $('#dlgCreationDialog')[0].close();
+                        });
+                    }
                 });
                 
                 $('#dlgCreationDialog')[0].showModal();
@@ -176,9 +263,10 @@ export default class createSession {
         let errors = service.sessionIsValid();
         if (errors==null) {
             // Hide current page and render run session page
+            $('#divCreateSession').html('');
             $('#divCreateSession').hide();
             let runSessionPage = new runSession(service);
-            runSessionPage.render();   
+            runSessionPage.render();
         }
         else {
             let html = alertIcon + " ERROR <br/>" + errors;
