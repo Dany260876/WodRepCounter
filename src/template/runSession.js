@@ -1,6 +1,6 @@
-import { $ } from 'jquery'
-import htmlContent from './runSession.html?raw'
-import iconEndSession from '../assets/trophy.svg?raw'
+import { $ } from 'jquery';
+import htmlContent from './runSession.html?raw';
+import iconEndSession from '../assets/trophy.svg?raw';
 import eventService from '../service/eventService';
 import reportSession from './reportSession';
 
@@ -19,7 +19,8 @@ export default class runSession {
     }
     initPage() {
         $('#divRunSession').html(htmlContent);
-        $('#divRunSession').show();
+        $('#divRunSession').removeClass('hidden');
+        $('#divRunSession').addClass('visible');
         this.showCurrentStep();
     }
     initEvents() {
@@ -48,7 +49,7 @@ export default class runSession {
         // init action fields value
         let valUnit = this.sessionService.getItemValueAndUnit(this.currentItem);
         let spanActionName = $('#runSessionContent').find('#spanActionName');
-        spanActionName.html(valUnit.icon + ' ' + this.currentItem.getName());
+        spanActionName.html(valUnit.icon + '<br/> ' + this.currentItem.getName());
         let spanActionReps = $('#runSessionContent').find('#spanActionReps');
         spanActionReps.text(valUnit.value);
         let spanActionUnit = $('#runSessionContent').find('#spanActionUnit');
@@ -134,13 +135,14 @@ export default class runSession {
     endWorkout() {
         // clean & hide
         $('#divRunSession').html('');
-        $('#divRunSession').hide();
+        $('#divRunSession').removeClass('visible');
+        $('#divRunSession').addClass('hidden');
 
         // get session duration (seconds)
         let startDate = new Date(this.sessionService.session.startDate).getTime();
         let durationSec = (new Date().getTime() - startDate)/1000;
         this.sessionService.session.duration = durationSec;
-        this.sessionService.session.name = "Session - " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
+        this.sessionService.session.name = "Session (" + new Date().toLocaleDateString() + ")";
         
         // Render report
         let report = new reportSession(this.sessionService);

@@ -1,18 +1,29 @@
-<p>
-    <span class='spanReportSessionName'>[SESSION_NAME]</span>
-    <br/>
-    Date : <span class='spanReportSessionDate'>[SESSION_DATE]</span>
-    <br/>
-    Total duration : <span class='spanReportSessionDuration'>[SESSION_DURATION]</span>
-</p>
-<p>
-    Nb of workouts : <span class='spanReportSessionWorkouts'>[SESSION_WORKOUTS]</span>
-    <br/>
-    Nb of actions : <span class='spanReportSessionActions'>[SESSION_ACTIONS]</span>
-    <br/>
-    Total pause : <span class='spanReportSessionTotalPause'>[SESSION_PAUSE]</span> seconds
-</p>
-<div class='divButtons'>
-    <button id='btncloseReport'>Close</button>
-    <button id='btnShowHisstory'>History</button>
+<div class="divReportGeneralInfos">
+    <span class="spanReportSessionName">[SESSION_NAME]</span>
+    <ul>
+      <li>Start Date <span class='spanReportDate'>[SESSION_DATE]</span></li>
+      <li>Total duration <span class='spanReportDuration'>[SESSION_DURATION]</span></li>
+    </ul>
+</div>
+
+<div class="divReportTotals">
+    <ul>
+      <li>Workouts<span class='spanReportWorkouts'>[SESSION_WORKOUTS]</span></li>
+      <li>Actions<span class='spanReportActions'>[SESSION_ACTIONS]</span></li>
+      <li>Pause<span class='spanReportPause'>[SESSION_PAUSE]</span></li>
+    </ul>
+</div>
+
+<div class="divReportActionDetails">
+    Actions details :
+    <table class="tblReportActionsDetails">
+      <tbody>
+        [ACTION_DETAILS]
+      </tbody>
+    </table>
+</div>
+
+<div class="divButtons">
+    <button id="btncloseReport">Close</button>
+    <button id="btnShowHisstory">History</button>
 </div>

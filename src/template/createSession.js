@@ -21,7 +21,8 @@ export default class createSession {
     }
     initPage() {
         $('#divCreateSession').html(htmlContent);
-        $('#divCreateSession').show();
+        $('#divCreateSession').removeClass('hidden');
+        $('#divCreateSession').addClass('visible');
         $('.btn-save').html(saveIconContent);
         $('.btn-load').html(loadIconContent);
         $('.btn-settings').html(settingsIconContent);
@@ -264,7 +265,8 @@ export default class createSession {
         if (errors==null) {
             // Hide current page and render run session page
             $('#divCreateSession').html('');
-            $('#divCreateSession').hide();
+            $('#divCreateSession').removeClass('visible');
+            $('#divCreateSession').addClass('hidden');
             let runSessionPage = new runSession(service);
             runSessionPage.render();
         }
