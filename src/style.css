@@ -63,7 +63,7 @@ select {
 }
 
 input[type="number"] {
-  width: 80px;
+  width: 50px;
 }
 
 input[type="text"]:focus,
@@ -434,16 +434,16 @@ select:focus {
   font-size: 1rem;
   color: var(--text-muted);
   margin: 20px 0 0 0;
-  background: rgba(255, 179, 0, 0.1);
+  background: rgb(213 218 255 / 35%);
   padding: 10px 20px;
   border-radius: 30px;
-  border: 1px dashed rgba(255, 179, 0, 0.3);
+  border: 1px dashed rgb(41 50 102 / 30%);
 }
 
 #spanNextActionName, 
 #spanNextActionReps, 
 #spanNextActionUnit {
-  color: var(--accent-color);
+  color: #4f4f8e;
   font-weight: 600;
 }
 

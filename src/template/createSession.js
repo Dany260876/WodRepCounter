@@ -26,6 +26,7 @@ export default class createSession {
         $('.btn-save').html(saveIconContent);
         $('.btn-load').html(loadIconContent);
         $('.btn-settings').html(settingsIconContent);
+        $('#divWorkoutList').data('session-name', '');
         this.addNewWorkout();
     }
     initEvents() {
@@ -129,6 +130,7 @@ export default class createSession {
     buildSessionFromDOM(service) {
          // get data from DOM and build Session data
         let workouts = $('#divWorkoutList .detWorkout');
+        service.session.name = $('#divWorkoutList').data('session-name');
         workouts.each((i, elt) => {
             let workoutName = $(elt).find('.txtWorkoutName');
             let workoutReps = $(elt).find('.txtWorkoutReps');
@@ -173,8 +175,9 @@ export default class createSession {
         sessionService.getSavedSessionByName(name).done((session) => {
             if (session!=null) {
                 $('#divWorkoutList').html(''); // reset htmlContent
-
+               
                 // build new content
+                $('#divWorkoutList').data('session-name', session.name);
                 session.workoutList.forEach((obj) => {
                     // Add blank workout
                     $('.detWorkout').removeAttr('open');

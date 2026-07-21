@@ -75,6 +75,10 @@ export default class runSession {
         // Start Counter for pause
         if (this.currentItem.type.toUpperCase()=='PAUSE') {
             this.startTimer(valUnit.value);
+            $('.pCurrentAction').css('background-color','#ecc1c1');
+        }
+        else {
+            $('.pCurrentAction').css('background-color','#bfe3bf');
         }
     }
     startTimer(seconds) {
@@ -142,7 +146,8 @@ export default class runSession {
         let startDate = new Date(this.sessionService.session.startDate).getTime();
         let durationSec = (new Date().getTime() - startDate)/1000;
         this.sessionService.session.duration = durationSec;
-        this.sessionService.session.name = "Session (" + new Date().toLocaleDateString() + ")";
+        if (this.sessionService.session.name == '') 
+            this.sessionService.session.name = "Session (" + new Date().toLocaleDateString() + ")";
         
         // Render report
         let report = new reportSession(this.sessionService);
