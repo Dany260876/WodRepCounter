@@ -1,0 +1,13 @@
+{
+  "name": "Workout Rep Counter",
+  "short_name": "WR Counter",
+  "start_url": "./",
+  "icons": [
+    {
+      "sizes": "512x512",
+      "src": "./icon.png",
+      "type": "image/png"
+    }
+  ],
+  "display": "fullscreen"
+} 
