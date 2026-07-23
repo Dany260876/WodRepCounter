@@ -833,7 +833,7 @@ select:focus {
   max-width: 420px;
   max-height: 85vh; /* Limite la hauteur sur mobile */
   margin: 20px auto;
-  padding: 20px;
+  padding: 5px;
   background-color: var(--bg-card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
@@ -938,3 +938,30 @@ select:focus {
   background-color: var(--primary-hover);
   transform: scale(0.99);
 }
+
+/* --- Settings page */
+
+#btnSettingsClearHistory {
+  background: #c15454;
+  color: #ffffff;
+}
+#btnSettingsClearHistory:hover {
+  background: #f69c9c;
+}
+
+#btnSettingsExportData {
+  background: #16a34a;
+  color: #ffffff;
+}
+#btnSettingsExportData:hover {
+  background: #69d390;
+}
+
+#btnSettingsImportData {
+  background: #989ba0;
+  color: #ffffff;
+}
+#btnSettingsImportData:hover {
+  background: #b6bac2;
+}
+

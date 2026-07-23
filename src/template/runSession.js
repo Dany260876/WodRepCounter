@@ -4,6 +4,7 @@ import iconEndSession from '../assets/trophy.svg?raw';
 import audioClickWav from '../assets/click.wav';
 import audioDoneWav from '../assets/done.wav';
 import eventService from '../service/eventService';
+import settingsService from '../service/settingsService';
 import reportSession from './reportSession';
 
 export default class runSession {
@@ -14,11 +15,16 @@ export default class runSession {
         this.workoutRepNumber = 1;
         this.currentWorkout = null;
         this.currentItem = null;
+        this.soundsEnabled = true; // defaults
     }
     render() {
         this.initPage();
         this.initEvents();
         this.initSounds();
+        // get settings
+        settingsService.getSettings().done((settings) => {
+            this.soundsEnabled = settingsService.getValue('soundsOn', settings);
+        });
     }
     initPage() {
         $('#divRunSession').html(htmlContent);
@@ -89,19 +95,19 @@ export default class runSession {
         }
     }
     startTimer(seconds) {
-        $('#btnRunSessionStepOK').text('Wait...');
+        $('#btnRunSessionStepOK').text('Wait');
         $('#btnRunSessionStepOK').attr('disabled','disabled');
         let val = seconds;
         this.timerPause = window.setInterval(() => {           
             val--;
-            if (val<4 && val>0) this.audioClick.play();
+            if (val<4 && val>0 && this.soundsEnabled) this.audioClick.play();
             
             $('#spanActionReps').text(val);
             if (val==0) {
                 $('#btnRunSessionStepOK').text('OK');
                 $('#btnRunSessionStepOK').removeAttr('disabled');
                 window.clearInterval(this.timerPause);
-                this.audioDone.play();
+                if (this.soundsEnabled) this.audioDone.play();
                 $('#btnRunSessionStepOK').click();
             }
         }, 1000);

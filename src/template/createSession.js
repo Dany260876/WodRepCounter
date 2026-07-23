@@ -11,9 +11,12 @@ import htmlContent from './createSession.html?raw';
 import htmlBlankWorkout from './component/blankWorkout.html?raw';
 import htmlNewAction from './component/newAction.html?raw';
 import htmlDlgSaveSession from './component/dialogSaveSession.html?raw';
+import htmlDlgConfiguration from './component/dialogConfig.html?raw';
 
 import sessionService from '../service/sessionService';
 import eventService from '../service/eventService';
+import settingsService from '../service/settingsService';
+import historyService from '../service/historyService';
 
 import runSession from './runSession';
 import historySession from './historySession';
@@ -45,6 +48,7 @@ export default class createSession {
         eventService.eventClick('.btn-save', () => this.saveSession());
         eventService.eventClick('.btn-load', () => this.loadSession());
         eventService.eventClick('.btn-history', () => this.showHistory());
+        eventService.eventClick('.btn-settings', () => this.showSettings());
         eventService.eventChange('.selActionType', () => this.changeActionType());
     }
     getWorkoutHtml(workout) {
@@ -298,5 +302,21 @@ export default class createSession {
         $('#divCreateSession').html('');
         $('#divCreateSession').removeClass('visible');
         $('#divCreateSession').addClass('hidden');
+    }
+    showSettings() {
+        settingsService.getSettings().always((settings) => {
+            $('#spanCreationDialogMessage').html(htmlDlgConfiguration);
+            $("#chkSettingsSounds")[0].checked = settingsService.getValue('soundsOn', settings);
+            eventService.eventClick('#chkSettingsSounds', (e) => {
+                let val = e.currentTarget.checked;
+                settingsService.saveSettings("soundsOn",val,settings);
+            });
+            eventService.eventClick('#btnSettingsClearHistory', (e) => {
+                historyService.clearHistory().always(() => {
+                    $('#dlgCreationDialog')[0].close();
+                });
+            });
+            $('#dlgCreationDialog')[0].showModal();
+        });
     }
 }

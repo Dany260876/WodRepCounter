@@ -31,4 +31,13 @@ export default class historyService {
         });
         return res.promise();
     }
+    static clearHistory() {
+        const res = $.Deferred();
+        localforage.removeItem('historySession').then(() => {
+            res.resolve();
+        }).catch((err) => {
+            res.reject(err);
+        });
+        return res.promise();
+    }
 }
