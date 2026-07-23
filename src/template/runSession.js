@@ -1,6 +1,8 @@
 import { $ } from 'jquery';
 import htmlContent from './runSession.html?raw';
 import iconEndSession from '../assets/trophy.svg?raw';
+import audioClickWav from '../assets/click.wav';
+import audioDoneWav from '../assets/done.wav';
 import eventService from '../service/eventService';
 import reportSession from './reportSession';
 
@@ -16,6 +18,7 @@ export default class runSession {
     render() {
         this.initPage();
         this.initEvents();
+        this.initSounds();
     }
     initPage() {
         $('#divRunSession').html(htmlContent);
@@ -30,6 +33,10 @@ export default class runSession {
             else 
                 this.endWorkout();
         });
+    }
+    initSounds() {
+        this.audioClick = new Audio(audioClickWav);
+        this.audioDone = new Audio(audioDoneWav);
     }
     showCurrentStep() {        
         // get current workout & current action item
@@ -85,13 +92,16 @@ export default class runSession {
         $('#btnRunSessionStepOK').text('Wait...');
         $('#btnRunSessionStepOK').attr('disabled','disabled');
         let val = seconds;
-        this.timerPause = window.setInterval(() => {
+        this.timerPause = window.setInterval(() => {           
             val--;
+            if (val<4 && val>0) this.audioClick.play();
+            
             $('#spanActionReps').text(val);
             if (val==0) {
                 $('#btnRunSessionStepOK').text('OK');
                 $('#btnRunSessionStepOK').removeAttr('disabled');
                 window.clearInterval(this.timerPause);
+                this.audioDone.play();
                 $('#btnRunSessionStepOK').click();
             }
         }, 1000);
@@ -150,7 +160,7 @@ export default class runSession {
             this.sessionService.session.name = "Session - " + new Date().toLocaleDateString();
         
         // Render report
-        let report = new reportSession(this.sessionService);
+        let report = new reportSession(this.sessionService.session);
         report.render();
     }
 }

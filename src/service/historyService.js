@@ -8,6 +8,7 @@ export default class historyService {
         // get sessions history
         localforage.getItem('historySession').then((value) => {
             if (value==null) value = [];
+            session.id = new Date().getTime();
             value.push(session);
             localforage.setItem('historySession', value).then((obj) => {
                 res.resolve(session);

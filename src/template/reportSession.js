@@ -8,8 +8,8 @@ import createSession from './createSession';
 import historySession from './historySession';
 
 export default class reportSession {
-    constructor(service) {
-        this.session = service.session;
+    constructor(session) {
+        this.session = session;
     }
     render() {
         this.initPage();
