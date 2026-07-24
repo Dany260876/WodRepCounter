@@ -69,6 +69,15 @@ export default class sessionService {
 
         return res.promise();
     }
+    static restoreSession(values) {
+        const res = $.Deferred();
+        localforage.setItem('savedSessions', values).then((obj) => {
+            res.resolve();
+        }).catch((err) => {
+            res.reject(err);
+        });
+        return res.promise();
+    }
     static getSessionStats(session) {
         let result = {};
 
@@ -108,15 +117,15 @@ export default class sessionService {
         });
         return res.promise();
     }
-    static getSavedSessionByName(name) {
+    static getSavedSessionById(id) {
         const res = $.Deferred();
         
-        if (name.trim()!='') {
+        if (id) {
             // get saved sessions
             localforage.getItem('savedSessions').then((values) => {
                 if (values!=null) {                  
-                    // get item by name
-                    let index = values.findIndex((val) => val.name==name);
+                    // get item by id
+                    let index = values.findIndex((val) => val.id==id);
                     if (index>-1) 
                         res.resolve(values[index]);
                     else
@@ -129,25 +138,25 @@ export default class sessionService {
             });
         }
         else
-            res.reject('invalid name');
+            res.reject('invalid session');
         
         return res.promise();
     }
-    static removeSavedSession(name) {
+    static removeSavedSession(id) {
         const res = $.Deferred();
         
-        if (name.trim()!='') {
+        if (id) {
             // get saved sessions & remove selected
             localforage.getItem('savedSessions').then((values) => {
                 if (values!=null) {                  
-                    // remove item by name
-                    let index = values.findIndex((val) => val.name==name);
+                    // remove item by id
+                    let index = values.findIndex((val) => val.id==id);
                     if (index>-1) {
                         values.splice(index, 1);
                     }
                     // Save content
                     localforage.setItem('savedSessions', values).then((obj) => {
-                        res.resolve("Session '" + name + "' saved.");
+                        res.resolve("Session removed.");
                     }).catch((err) => {
                         res.reject(err);
                     });  
@@ -157,7 +166,7 @@ export default class sessionService {
             });
         }
         else
-            res.reject('invalid name');
+            res.reject('invalid session id');
         
         return res.promise();
     }

@@ -8,7 +8,6 @@ export default class historyService {
         // get sessions history
         localforage.getItem('historySession').then((value) => {
             if (value==null) value = [];
-            session.id = new Date().getTime();
             value.push(session);
             localforage.setItem('historySession', value).then((obj) => {
                 res.resolve(session);
@@ -34,6 +33,15 @@ export default class historyService {
     static clearHistory() {
         const res = $.Deferred();
         localforage.removeItem('historySession').then(() => {
+            res.resolve();
+        }).catch((err) => {
+            res.reject(err);
+        });
+        return res.promise();
+    }
+    static restoreHistory(values) {
+        const res = $.Deferred();
+        localforage.setItem('historySession', values).then((obj) => {
             res.resolve();
         }).catch((err) => {
             res.reject(err);

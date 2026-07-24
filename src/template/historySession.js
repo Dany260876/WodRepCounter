@@ -28,7 +28,7 @@ export default class historySession {
             history.forEach((histo) => {
                 let stats = sessionService.getSessionStats(histo);
                 html += "<p class='pSessionItem' data-histo-id='" + histo.id + "'>";
-                html += "<span class='spanHistoTitle'>" + formattingService.getDate(histo.startDate) + " - " +  histo.name + "</span>";
+                html += "<span class='spanHistoTitle'>" + formattingService.getDate(new Date(histo.startDate)) + " - " +  histo.name + "</span>";
                 html += "<span class='spanHistoDetails'>" + stats.workouts + " workouts, " + stats.actions + " actions (duration " + formattingService.getDurationSeconds(histo.duration) + ")</span>";
                 html += "</p>";
             });
@@ -47,7 +47,7 @@ export default class historySession {
         let currentHisto = this.history.filter((h) => h.id==id);
         if (currentHisto.length>0) {
             this.hide();
-            new reportSession(currentHisto[0]).render(); 
+            new reportSession(currentHisto[0], true).render(); 
         }
     }
     closeHistory() {

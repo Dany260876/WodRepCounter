@@ -4,7 +4,7 @@ export default class session {
         this.workoutList = [];
         this.duration = 0;
         this.name = '';
-        this.id='';
+        this.id = new Date().getTime();
     }
     addWorkout(workout) {
         this.workoutList.push(workout);

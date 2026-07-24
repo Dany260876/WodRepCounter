@@ -35,4 +35,13 @@ export default class settingsService {
         });
         return res.promise();
     }
+    static restoreSettings(values) {
+        const res = $.Deferred();
+        localforage.setItem('wrcSettings', values).then((obj) => {
+            res.resolve();
+        }).catch((err) => {
+            res.reject(err);
+        });
+        return res.promise();
+    }
 }

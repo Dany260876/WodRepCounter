@@ -8,8 +8,9 @@ import createSession from './createSession';
 import historySession from './historySession';
 
 export default class reportSession {
-    constructor(session) {
+    constructor(session, previewOnly) {
         this.session = session;
+        this.previewOnly = previewOnly;
     }
     render() {
         this.initPage();
@@ -19,7 +20,7 @@ export default class reportSession {
         $('#divReportSession').html(this.getReportContent());
         $('#divReportSession').removeClass('hidden');
         $('#divReportSession').addClass('visible');
-        this.addSessionToHistory();
+        if (!this.previewOnly==true) this.addSessionToHistory();
     }
     initEvents() {
         eventService.eventClick('#btncloseReport', () => {

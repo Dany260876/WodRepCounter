@@ -279,7 +279,7 @@ select:focus {
   flex-wrap: wrap;
   gap: 0.5rem;
   align-items: center;
-  background: #f8fafc;
+  background: #e6f0fa;
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   padding: 0.5rem;
@@ -949,19 +949,12 @@ select:focus {
   background: #f69c9c;
 }
 
-#btnSettingsExportData {
+#btnSettingsExportData, #btnImportData {
   background: #16a34a;
   color: #ffffff;
 }
-#btnSettingsExportData:hover {
+#btnSettingsExportData:hover, #btnImportData:hover {
   background: #69d390;
 }
 
-#btnSettingsImportData {
-  background: #989ba0;
-  color: #ffffff;
-}
-#btnSettingsImportData:hover {
-  background: #b6bac2;
-}
 

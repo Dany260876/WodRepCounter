@@ -185,10 +185,10 @@ export default class createSession {
         
         $('#mainDialog')[0].showModal();
     }
-    restoreSession(name) {
+    restoreSession(id) {
         const res = $.Deferred();
         
-        sessionService.getSavedSessionByName(name).done((session) => {
+        sessionService.getSavedSessionById(id).done((session) => {
             if (session!=null) {
                 $('#divWorkoutList').html(''); // reset htmlContent
                
@@ -229,9 +229,9 @@ export default class createSession {
                     let exQty = 0;
                     objSession.workoutList.forEach((w) => exQty+=w.items.length);
                     html += "<tr class='listItemRow'>";
-                    html += "<td class='tdItemSelector'><input type='radio' name='sessionSelect' value='" + objSession.name + "'" + checked + "/></td>";
+                    html += "<td class='tdItemSelector'><input type='radio' name='sessionSelect' value='" + objSession.id + "'" + checked + "/></td>";
                     html += "<td class='tdItemText'><span class='listItemText'>" + objSession.name + "</span><br/><span class='listItemTextSmall'>" + objSession.workoutList.length + " Workouts / " + exQty + " Exercices</span></td>";
-                    html += "<td><span class='spanDeleteSavedSession' data-id='" + objSession.name + "'>" + deleteIconContent + "</span></td>";
+                    html += "<td><span class='spanDeleteSavedSession' data-id='" + objSession.id + "'>" + deleteIconContent + "</span></td>";
                     html += "</tr>";
                     checked = "";
                 });
@@ -240,8 +240,8 @@ export default class createSession {
                 $('#spanCreationDialogMessage').html(html);
 
                 eventService.eventClick('.spanDeleteSavedSession', (e) => {
-                    let name = $(e.currentTarget).data('id');
-                    sessionService.removeSavedSession(name)
+                    let id = $(e.currentTarget).data('id');
+                    sessionService.removeSavedSession(id)
                         .done(() => {
                             this.loadSession();
                         })
@@ -316,7 +316,47 @@ export default class createSession {
                     $('#dlgCreationDialog')[0].close();
                 });
             });
+            eventService.eventClick('#btnSettingsExportData', (e) => {
+                let resHisto = historyService.getHistory();
+                let resSession = sessionService.getSavedSessions();
+                let resSettings = settingsService.getSettings();
+                $.when(resHisto, resSession, resSettings).done((dataHisto, dataSession, dataSettings) => {
+                    let data = new Map();
+                    data.set('dataSession', dataSession);
+                    data.set('dataHisto', dataHisto);
+                    data.set('dataSettings', Array.from(dataSettings));
+                    let stringData = btoa(JSON.stringify(Array.from(data)));
+                    this.renderExportData(stringData);
+                });
+            });
+            
             $('#dlgCreationDialog')[0].showModal();
+        });
+    }
+    renderExportData(data) {
+        let html = "";
+        html += "<p><textarea id='txtImportExportData' rows='15' cols='30'>" + data + "</textarea></p>";
+        html += "<p><button class='btnDialog' id='btnImportData'>Import</button></p><hr/>";       
+        $('#spanCreationDialogMessage').html(html);
+        eventService.eventClick('#btnImportData', (e) => {
+            try {
+                let val = $('#txtImportExportData').val();
+                let valMap = new Map(JSON.parse(atob(val)));
+                let dataSession = valMap.get('dataSession');
+                let dataHisto = valMap.get('dataHisto');
+                let dataSettings = new Map(valMap.get('dataSettings'));
+               
+                let resHisto = historyService.restoreHistory(dataHisto);
+                let resSession = sessionService.restoreSession(dataSession);
+                let resSettings = settingsService.restoreSettings(dataSettings);
+                
+                $.when(resHisto, resSession, resSettings).done(() => {
+                    $('#dlgCreationDialog')[0].close();
+                });
+            }
+            catch(err) {
+                $('#spanCreationDialogMessage').html("Error during import data (" + err + ")");
+            }
         });
     }
 }
