@@ -517,7 +517,7 @@ select:focus {
 }
 
 #btnDialogSaveSession, 
-#btnDialogLoadSession {
+#btnDialogLoadSession, #btnDialogLoadSessionDetails {
   background-color: #10b981;
 }
 
@@ -547,6 +547,27 @@ select:focus {
   box-sizing: content-box;
   display: block;
   overflow: scroll;
+  border-collapse: collapse;
+}
+
+/* 2. Permet au texte au centre d'occuper tout l'espace restant */
+.tblItemsList .tdItemText {
+  width: 100%;
+}
+
+/* 3. Colle la dernière cellule (les icônes) à droite et aligne les icônes */
+.tblItemsList tr.listItemRow td:last-child {
+  text-align: right;
+  white-space: nowrap; /* Évite que les icônes ne passent l'une sous l'autre */
+}
+
+/* Optionnel : Ajuste l'alignement vertical et l'espacement des icônes */
+.tblItemsList span.spanOpenSavedSession,
+.tblItemsList span.spanDeleteSavedSession {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 2px; /* Espace entre les deux icônes */
 }
 
 /* ==========================================================================
@@ -957,4 +978,182 @@ select:focus {
   background: #69d390;
 }
 
+/* ==========================================================================
+   9. FICHE DE DÉTAILS DE SESSION (Intégration HTML #spanCreationDialogMessage)
+   ========================================================================== */
 
+#spanCreationDialogMessage {
+  display: block;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-main);
+  text-align: left;
+  max-width: 100%;
+}
+
+/* --- Nettoyage des paragraphes superflus --- */
+#spanCreationDialogMessage > p:empty {
+  display: none;
+}
+
+#spanCreationDialogMessage > p {
+  margin: 0 0 0.5rem 0;
+}
+
+/* --- En-tête : Nom de la session & Date --- */
+.spanSessionDetailsName {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.02em;
+  text-transform: capitalize;
+}
+
+/* --- Bloc / Carte Workout --- */
+#spanCreationDialogMessage p:has(.spanSessionDetailsWorkoutName) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f1f5f9;
+  border-left: 4px solid var(--primary);
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  margin-top: 1rem;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+/* Dans le cas où un workout n'a pas de reps spécifiées juste après */
+#spanCreationDialogMessage p:has(.spanSessionDetailsWorkoutName) + p:has(.spanSessionDetailsWorkoutReps) {
+  margin-top: -0.5rem;
+  background-color: #f1f5f9;
+  padding: 0 0.85rem 0.6rem 0.85rem;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  border-left: 4px solid var(--primary);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.spanSessionDetailsWorkoutName {
+  font-size: 1rem;
+  color: var(--text-main);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.spanSessionDetailsWorkoutReps {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  color: var(--primary);
+  border: 1px solid var(--border-color);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+}
+
+/* --- Liste des Exercices (Actions) --- */
+#spanCreationDialogMessage ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  padding: 0.5rem;
+}
+
+#spanCreationDialogMessage li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--bg-main);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+#spanCreationDialogMessage li:hover {
+  background-color: var(--bg-item-hover);
+}
+
+/* Nom de l'exercice */
+.spanSessionDetailsItemName {
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tag de Type (ex: ACTION) */
+.spanSessionDetailsItemType {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: #e2e8f0;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* Nombre de répétitions de l'exercice */
+.spanSessionDetailsItemReps, .spanSessionDetailsItemSecs {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.95rem;
+  min-width: 1.8rem;
+  text-align: right;
+}
+
+/* --- Adaptation responsive mobile / petits écrans --- */
+@media (max-width: 480px) {
+  .spanSessionDetailsName {
+    font-size: 1.2rem;
+  }
+  
+  #spanCreationDialogMessage li {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* --- Container englobant scrollable --- */
+#divSessionDetails {
+  max-height: 55vh; /* Limite la hauteur du contenu sur mobile */
+  overflow-y: auto;  /* Active le défilement vertical si besoin */
+  padding-right: 2px; /* Espace réservé pour la scrollbar */
+  text-align: left;
+  -webkit-overflow-scrolling: touch; /* Scroll fluide sur iOS */
+}
+
+/* Style moderne et discret de la scrollbar */
+#divSessionDetails::-webkit-scrollbar {
+  width: 5px;
+}
+
+#divSessionDetails::-webkit-scrollbar-track {
+  background: var(--bg-main);
+  border-radius: 10px;
+}
+
+#divSessionDetails::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+#divSessionDetails::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

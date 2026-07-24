@@ -6,6 +6,7 @@ import chartIconContent from '../assets/chart-bar.svg?raw';
 import settingsIconContent from '../assets/settings.svg?raw';
 import deleteIconContent from '../assets/circle-x.svg?raw';
 import alertIcon from '../assets/alert.svg?raw';
+import fileIcon from '../assets/file.svg?raw';
 
 import htmlContent from './createSession.html?raw';
 import htmlBlankWorkout from './component/blankWorkout.html?raw';
@@ -231,7 +232,10 @@ export default class createSession {
                     html += "<tr class='listItemRow'>";
                     html += "<td class='tdItemSelector'><input type='radio' name='sessionSelect' value='" + objSession.id + "'" + checked + "/></td>";
                     html += "<td class='tdItemText'><span class='listItemText'>" + objSession.name + "</span><br/><span class='listItemTextSmall'>" + objSession.workoutList.length + " Workouts / " + exQty + " Exercices</span></td>";
-                    html += "<td><span class='spanDeleteSavedSession' data-id='" + objSession.id + "'>" + deleteIconContent + "</span></td>";
+                    html += "<td>";
+                    html += "<span class='spanOpenSavedSession' data-id='" + objSession.id + "'>" + fileIcon + "</span>";
+                    html += "<span class='spanDeleteSavedSession' data-id='" + objSession.id + "'>" + deleteIconContent + "</span>";
+                    html += "</td>";
                     html += "</tr>";
                     checked = "";
                 });
@@ -248,6 +252,13 @@ export default class createSession {
                         .fail((err) => console.log(err));
                 });
 
+                eventService.eventClick('.spanOpenSavedSession', (e) => {
+                    let id = $(e.currentTarget).data('id');
+                    let index = sessions.findIndex((val) => val.id==id);
+                    let currentSession = sessions[index];
+                    this.buildSessionDetails(currentSession);
+                });
+                
                 eventService.eventClick('#btnDialogLoadSession', (e) => {
                     let elts = $('.tblItemsList').find('.tdItemSelector');
                     let selectedValue = '';
@@ -274,6 +285,36 @@ export default class createSession {
         }).fail((err) => {
             $('#spanCreationDialogMessage').html(err);
             $('#dlgCreationDialog')[0].showModal();
+        });
+    }
+    buildSessionDetails(session) {
+        let html = "<div id='divSessionDetails' data-session-id='" + session.id + "'>";
+        html += "<p><span class='spanSessionDetailsName'>" + session.name + "</span></p>";
+        session.workoutList.forEach((workout) => {
+            html += "<p><span class='spanSessionDetailsWorkoutName'>" + workout.name + "</span></p>";
+            html += "<p><span class='spanSessionDetailsWorkoutReps'>" + workout.reps + "</span> reps</p>";
+            html += "<p>";
+            html += "<ul>";
+            workout.items.forEach((item) => {
+                html += "<li>";
+                html += "<span class='spanSessionDetailsItemName'>" + item.name + "</span>";
+                html += "<span class='spanSessionDetailsItemType'>" + item.type + "</span>";
+                if (item.reps) html += "<span class='spanSessionDetailsItemReps'>" + item.reps + " reps</span>";
+                if (item.duration) html += "<span class='spanSessionDetailsItemSecs'>" + item.duration + " secs</span>";
+                html += "</li>";
+            });
+            html += "</ul>";
+            html += "</p>";
+        });
+        html += "</div>";
+        html += "<button class='btnDialog' id='btnDialogLoadSessionDetails'>Load session</button><hr/>";
+        $('#spanCreationDialogMessage').html(html);
+
+        eventService.eventClick('#btnDialogLoadSessionDetails', (e) => {
+            let id = $("#divSessionDetails").data('session-id');
+            this.restoreSession(id).always(() => {
+                $('#dlgCreationDialog')[0].close();
+            });
         });
     }
     startSession() {
