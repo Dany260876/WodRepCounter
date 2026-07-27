@@ -4,6 +4,7 @@ export default class item {
         this.name = name;
     }
     getName() {
-        return this.name[0].toUpperCase()+this.name.substr(1);
+        if (this.name=='') return '';
+        return this.name[0].toUpperCase() + this.name.substr(1);
     }
 }

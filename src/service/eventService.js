@@ -10,4 +10,8 @@ export default class eventService {
         $(target).off("change");
         $(target).change(handler);   
     }
+    static eventFocus(target, handler) {
+        $(target).off("focus");
+        $(target).focus(handler);   
+    }
 }

@@ -51,6 +51,8 @@ export default class createSession {
         eventService.eventClick('.btn-history', () => this.showHistory());
         eventService.eventClick('.btn-settings', () => this.showSettings());
         eventService.eventChange('.selActionType', () => this.changeActionType());
+        eventService.eventFocus('.txtActionName', (e) => this.clearTextField(e));
+        eventService.eventFocus('.txtWorkoutName', (e) => this.clearTextField(e));
     }
     getWorkoutHtml(workout) {
         let name = 'workout name';
@@ -66,6 +68,10 @@ export default class createSession {
         return htmlBlankWorkout.replace(/\[(WORKOUT_NAME|WORKOUT_VALUE)\]/g, 
             matched => values[matched]
         );
+    }
+    clearTextField(e) {
+        let value = $(e.currentTarget).val();
+        if ((value=='name') || (value=='workout name')) $(e.currentTarget).val('');
     }
     addNewWorkout() {
         $('.detWorkout').removeAttr('open');
@@ -223,6 +229,7 @@ export default class createSession {
     loadSession() {
         sessionService.getSavedSessions().done((sessions) => {
             if (sessions.length>0) {
+                sessions.sort((a,b) => { if (a.name>b.name) return 1; else return -1; }); // sort sessions by name                
                 let html = "<table class='tblItemsList'>";
                 let checked = " checked";
                 sessions.forEach((objSession, i) => {

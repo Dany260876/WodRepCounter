@@ -13,6 +13,7 @@ export default class workout {
         return null;
     }
     getName() {
-        return this.name[0].toUpperCase()+this.name.substr(1);
+        if (this.name=='') return '';
+        return this.name[0].toUpperCase() + this.name.substr(1);
     }
 }

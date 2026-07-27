@@ -5,6 +5,7 @@ import audioClickWav from '../assets/click.wav';
 import audioDoneWav from '../assets/done.wav';
 import eventService from '../service/eventService';
 import settingsService from '../service/settingsService';
+import sessionService from "/src/service/sessionService.js";
 import reportSession from './reportSession';
 
 export default class runSession {
