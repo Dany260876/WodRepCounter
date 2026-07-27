@@ -207,6 +207,12 @@ select:focus {
   color: #d95454;
 }
 
+.spanDeleteSavedSession {
+    float: right;
+    padding: 0px;
+    margin-top: 22px;
+}
+
 .spanDeleteWorkout:hover, 
 .spanDeleteAction:hover {
   background-color: var(--danger-bg);
@@ -1099,18 +1105,11 @@ select:focus {
 
 /* Tag de Type (ex: ACTION) */
 .spanSessionDetailsItemType {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  background: #e2e8f0;
   padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  text-transform: uppercase;
 }
 
 /* Nombre de répétitions de l'exercice */
-.spanSessionDetailsItemReps, .spanSessionDetailsItemSecs {
+.spanSessionDetailsItemReps {
   font-weight: 700;
   color: var(--primary);
   font-size: 0.95rem;

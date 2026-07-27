@@ -33,20 +33,6 @@ export default class sessionService {
     getWorkout(index) {
         return this.session.getWorkout(index);
     }
-    getItemValueAndUnit(item) {
-        let result = {};
-        if (item.type=='ACTION') {
-            result.value = item.reps;
-            result.unit = 'reps';
-            result.icon = iconAction;  
-        }
-        if (item.type=='PAUSE') {
-            result.value = item.duration;
-            result.unit = 'seconds';
-            result.icon = iconPause; 
-        }
-        return result;
-    }
     saveSession(name) {
         const res = $.Deferred();
         if (name.trim()!='') {
@@ -169,5 +155,19 @@ export default class sessionService {
             res.reject('invalid session id');
         
         return res.promise();
+    }
+    static getItemValueAndUnit(item) {
+        let result = {};
+        if (item.type=='ACTION') {
+            result.value = item.reps;
+            result.unit = 'reps';
+            result.icon = iconAction;
+        }
+        if (item.type=='PAUSE') {
+            result.value = item.duration;
+            result.unit = 'seconds';
+            result.icon = iconPause; 
+        }
+        return result;
     }
 }

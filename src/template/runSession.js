@@ -60,7 +60,7 @@ export default class runSession {
         spanCurrentWorkoutRep.text(this.workoutRepNumber);
 
         // init action fields value
-        let valUnit = this.sessionService.getItemValueAndUnit(this.currentItem);
+        let valUnit = sessionService.getItemValueAndUnit(this.currentItem);
         let spanActionName = $('#runSessionContent').find('#spanActionName');
         spanActionName.html(this.currentItem.getName());
         let spanActionReps = $('#runSessionContent').find('#spanActionReps');
@@ -76,7 +76,7 @@ export default class runSession {
         let nextItem = this.getNextItem();
         if (nextItem!=null) {
             spanNextActionName.text(nextItem.getName());
-            let valUnitNext = this.sessionService.getItemValueAndUnit(nextItem);
+            let valUnitNext = sessionService.getItemValueAndUnit(nextItem);
             spanNextActionReps.text(valUnitNext.value);
             spanNextActionUnit.text(valUnitNext.unit);
             spanNextIcon.html(valUnitNext.icon);

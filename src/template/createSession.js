@@ -191,7 +191,6 @@ export default class createSession {
         
         sessionService.getSavedSessionById(id).done((session) => {
             if (session!=null) {
-                $('#divWorkoutList').html(''); // reset htmlContent
                
                 // build new content
                 $('#divWorkoutList').data('session-name', session.name);
@@ -234,7 +233,6 @@ export default class createSession {
                     html += "<td class='tdItemText'><span class='listItemText'>" + objSession.name + "</span><br/><span class='listItemTextSmall'>" + objSession.workoutList.length + " Workouts / " + exQty + " Exercices</span></td>";
                     html += "<td>";
                     html += "<span class='spanOpenSavedSession' data-id='" + objSession.id + "'>" + fileIcon + "</span>";
-                    html += "<span class='spanDeleteSavedSession' data-id='" + objSession.id + "'>" + deleteIconContent + "</span>";
                     html += "</td>";
                     html += "</tr>";
                     checked = "";
@@ -243,15 +241,8 @@ export default class createSession {
                 html += "<br/><button class='btnDialog' id='btnDialogLoadSession'>Load session</button><hr/>";
                 $('#spanCreationDialogMessage').html(html);
 
-                eventService.eventClick('.spanDeleteSavedSession', (e) => {
-                    let id = $(e.currentTarget).data('id');
-                    sessionService.removeSavedSession(id)
-                        .done(() => {
-                            this.loadSession();
-                        })
-                        .fail((err) => console.log(err));
-                });
-
+                eventService.eventClick('#btnCreationDialogOK', () => $('#dlgCreationDialog')[0].close());
+                
                 eventService.eventClick('.spanOpenSavedSession', (e) => {
                     let id = $(e.currentTarget).data('id');
                     let index = sessions.findIndex((val) => val.id==id);
@@ -289,6 +280,7 @@ export default class createSession {
     }
     buildSessionDetails(session) {
         let html = "<div id='divSessionDetails' data-session-id='" + session.id + "'>";
+        html += "<div class='spanDeleteSavedSession' data-id='" + session.id + "'>" + deleteIconContent + "</div>";
         html += "<p><span class='spanSessionDetailsName'>" + session.name + "</span></p>";
         session.workoutList.forEach((workout) => {
             html += "<p><span class='spanSessionDetailsWorkoutName'>" + workout.name + "</span></p>";
@@ -296,11 +288,11 @@ export default class createSession {
             html += "<p>";
             html += "<ul>";
             workout.items.forEach((item) => {
+                let itemValues = sessionService.getItemValueAndUnit(item);
                 html += "<li>";
                 html += "<span class='spanSessionDetailsItemName'>" + item.name + "</span>";
-                html += "<span class='spanSessionDetailsItemType'>" + item.type + "</span>";
-                if (item.reps) html += "<span class='spanSessionDetailsItemReps'>" + item.reps + " reps</span>";
-                if (item.duration) html += "<span class='spanSessionDetailsItemSecs'>" + item.duration + " secs</span>";
+                html += "<span class='spanSessionDetailsItemType'>" + itemValues.icon + "</span>";
+                html += "<span class='spanSessionDetailsItemReps'>" + itemValues.value + " " + itemValues.unit + "</span>";
                 html += "</li>";
             });
             html += "</ul>";
@@ -310,6 +302,19 @@ export default class createSession {
         html += "<button class='btnDialog' id='btnDialogLoadSessionDetails'>Load session</button><hr/>";
         $('#spanCreationDialogMessage').html(html);
 
+        eventService.eventClick('.spanDeleteSavedSession', (e) => {
+            let id = $(e.currentTarget).data('id');
+            sessionService.removeSavedSession(id)
+                .done(() => {
+                    this.loadSession();
+                })
+                .fail((err) => console.log(err));
+        });
+        
+        eventService.eventClick('#btnCreationDialogOK', () => {
+            this.loadSession();
+        });
+        
         eventService.eventClick('#btnDialogLoadSessionDetails', (e) => {
             let id = $("#divSessionDetails").data('session-id');
             this.restoreSession(id).always(() => {
