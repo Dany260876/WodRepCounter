@@ -136,13 +136,20 @@ export default class createSession {
             let textControle = $(btn).siblings('.txtActionName')[0];
             let html = "";
 
+            let currentVal = $(textControle).val();
+            if (currentVal=='name') {
+                $(textControle).val('');
+                currentVal='';
+            }
+
             html += "<ul class='ulKeywordsList'>";
             this.actionKeywords.values().forEach((val) => {
-                html += "<li class='liKeywordsItem'>" + val + "</li>";
+                if (val.toUpperCase().startsWith(currentVal.toUpperCase()))
+                    html += "<li class='liKeywordsItem'>" + val + "</li>";
             });
             html += "</ul>";
+            
             $(".divActionKeywords").html(html);
-            $(textControle).val('');
 
             let pos = $(textControle).position();
             let width = $(textControle).css('width');
