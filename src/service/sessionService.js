@@ -170,4 +170,23 @@ export default class sessionService {
         }
         return result;
     }
+    static getActionKeywords() {
+        const res = $.Deferred();       
+        // get saved sessions & build action keywords
+        localforage.getItem('savedSessions').then((values) => {
+            let resultArray = [];
+            if (values!=null) {                  
+                values.forEach((val) => {
+                    let words = val.workoutList.map((v) => v.items.map((i) => i.name));
+                    resultArray.push(words.flat());
+                });
+            }
+            let resultSet = new Set(resultArray.flat().toSorted());
+            if (resultSet.has('pause')) resultSet.delete('pause');
+            res.resolve(resultSet);
+        }).catch((err) => {
+            res.reject(err);
+        });
+        return res.promise();
+    }
 }

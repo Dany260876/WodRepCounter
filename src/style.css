@@ -1156,3 +1156,22 @@ select:focus {
 #divSessionDetails::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
+
+.divActionKeywords {
+  position: absolute;
+}
+
+.ulKeywordsList {
+  background-color: #fbfdff;
+  border-style: solid;
+  border-color: lightgrey;
+  border-width: 1px;
+  width: 150px;
+  margin-top: 12px;
+  padding-top: 5px;
+  list-style-type: none;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  height: 100px;
+  overflow-y: scroll;
+}

@@ -7,6 +7,7 @@ import settingsIconContent from '../assets/settings.svg?raw';
 import deleteIconContent from '../assets/circle-x.svg?raw';
 import alertIcon from '../assets/alert.svg?raw';
 import fileIcon from '../assets/file.svg?raw';
+import menuIcon from '../assets/menu.svg?raw';
 
 import htmlContent from './createSession.html?raw';
 import htmlBlankWorkout from './component/blankWorkout.html?raw';
@@ -25,7 +26,10 @@ import historySession from './historySession';
 export default class createSession {
     constructor() {}
     render() {
-        this.initPage();
+        sessionService.getActionKeywords().done((words) => {
+            this.actionKeywords = words;
+            this.initPage();
+        });
     }
     initPage() {
         $('#divCreateSession').html(htmlContent);
@@ -46,6 +50,7 @@ export default class createSession {
         eventService.eventClick('.btnAddAction', () => this.addNewAction());
         eventService.eventClick('.spanDeleteAction', () => this.deleteAction());
         eventService.eventClick('.spanDeleteWorkout', () => this.deleteWorkout());
+        eventService.eventClick('.spanMenuAction', () => this.showActionMenu());
         eventService.eventClick('.btn-save', () => this.saveSession());
         eventService.eventClick('.btn-load', () => this.loadSession());
         eventService.eventClick('.btn-history', () => this.showHistory());
@@ -53,6 +58,7 @@ export default class createSession {
         eventService.eventChange('.selActionType', () => this.changeActionType());
         eventService.eventFocus('.txtActionName', (e) => this.clearTextField(e));
         eventService.eventFocus('.txtWorkoutName', (e) => this.clearTextField(e));
+        eventService.eventClick(window, () => this.hideActionMenu());
     }
     getWorkoutHtml(workout) {
         let name = 'workout name';
@@ -109,11 +115,52 @@ export default class createSession {
             '[UNIT]': unit,
             '[SELECTEDACTION]': selectedAction,
             '[SELECTEDPAUSE]': selectedPause,
-            '[DELETEICONCONTENT]': deleteIconContent
+            '[DELETEICONCONTENT]': deleteIconContent,
+            '[MENUICONCONTENT]': menuIcon
         };
-        return htmlNewAction.replace(/\[(NAME|VALUE|UNIT|SELECTEDACTION|SELECTEDPAUSE|DELETEICONCONTENT)\]/g, 
+        return htmlNewAction.replace(/\[(NAME|VALUE|UNIT|SELECTEDACTION|SELECTEDPAUSE|DELETEICONCONTENT|MENUICONCONTENT)\]/g, 
             matched => values[matched]
         );
+    }
+    hideActionMenu() {
+        if ($(".divActionKeywords").css('display')!='none') {
+            $(".divActionKeywords").html('');
+            $(".divActionKeywords").removeClass('visible');
+            $(".divActionKeywords").addClass('hidden');
+        }
+    }
+    showActionMenu() {
+        let btn = event.currentTarget;
+
+        if (($(".divActionKeywords").css('display')=='none') && (this.actionKeywords.size>0)) {
+            let textControle = $(btn).siblings('.txtActionName')[0];
+
+            let html = "";
+            html += "<ul class='ulKeywordsList'>";
+            this.actionKeywords.values().forEach((val) => {
+                html += "<li class='liKeywordsItem'>" + val + "</li>";
+            });
+            html += "</ul>";
+
+            $(".divActionKeywords").html(html);
+
+            let pos = $(textControle).position();
+            $(".divActionKeywords").css('left', pos.left);
+            $(".divActionKeywords").css('top', pos.top+20);
+            $(".divActionKeywords").removeClass('hidden');
+            $(".divActionKeywords").addClass('visible');
+
+            eventService.eventClick('.liKeywordsItem', () => {
+                let val = $(event.currentTarget).text();
+                $(textControle).val(val);
+                this.hideActionMenu();
+            });
+        }
+        else {
+            this.hideActionMenu();
+        }
+
+        event.stopPropagation();
     }
     addNewAction() {
         let btn = event.currentTarget;
@@ -187,7 +234,12 @@ export default class createSession {
 
         eventService.eventClick('#btnDialogSaveSession', () => {
             let name = $('#txtSaveSessionName').val();
-            service.saveSession(name).always((msg) => $('#spanDialogContent').html(msg));
+            service.saveSession(name).always((msg) => {
+                sessionService.getActionKeywords().done((words) => {
+                    this.actionKeywords = words;
+                    $('#spanDialogContent').html(msg);
+                });
+            });
         });
         
         $('#mainDialog')[0].showModal();
