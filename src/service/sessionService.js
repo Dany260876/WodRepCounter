@@ -8,6 +8,8 @@ import pause from '../class/pause'
 import iconPause from '../assets/clock.svg?raw'
 import iconAction from '../assets/zap.svg?raw'
 
+import formattingService from './formattingService'
+
 export default class sessionService {
     constructor() {
         this.session = new session();
@@ -177,7 +179,7 @@ export default class sessionService {
             let resultArray = [];
             if (values!=null) {                  
                 values.forEach((val) => {
-                    let words = val.workoutList.map((v) => v.items.map((i) => i.name));
+                    let words = val.workoutList.map((v) => v.items.map((i) => formattingService.getFormattedString(i.name)));
                     resultArray.push(words.flat());
                 });
             }

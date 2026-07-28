@@ -16,4 +16,8 @@ export default class formattingService {
             return minutes + ':' + remainder;
         }
     }
+    static getFormattedString(strValue) {
+        strValue = strValue.trim();
+        return strValue[0].toUpperCase() + strValue.substr(1);
+    }
 }

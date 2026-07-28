@@ -1166,12 +1166,16 @@ select:focus {
   border-style: solid;
   border-color: lightgrey;
   border-width: 1px;
-  width: 150px;
-  margin-top: 12px;
+  margin-top: 8px;
   padding-top: 5px;
   list-style-type: none;
   padding-left: 10px;
   padding-bottom: 10px;
-  height: 100px;
+  height: 150px;
   overflow-y: scroll;
+}
+
+.liKeywordsItem {
+    padding-top: 2px;
+    padding-bottom: 2px;
 }

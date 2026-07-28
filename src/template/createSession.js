@@ -134,19 +134,21 @@ export default class createSession {
 
         if (($(".divActionKeywords").css('display')=='none') && (this.actionKeywords.size>0)) {
             let textControle = $(btn).siblings('.txtActionName')[0];
-
             let html = "";
+
             html += "<ul class='ulKeywordsList'>";
             this.actionKeywords.values().forEach((val) => {
                 html += "<li class='liKeywordsItem'>" + val + "</li>";
             });
             html += "</ul>";
-
             $(".divActionKeywords").html(html);
+            $(textControle).val('');
 
             let pos = $(textControle).position();
+            let width = $(textControle).css('width');
             $(".divActionKeywords").css('left', pos.left);
             $(".divActionKeywords").css('top', pos.top+20);
+            $(".divActionKeywords").css('width', width);
             $(".divActionKeywords").removeClass('hidden');
             $(".divActionKeywords").addClass('visible');
 
