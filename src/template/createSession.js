@@ -430,41 +430,41 @@ export default class createSession {
                     $('#dlgCreationDialog')[0].close();
                 });
             });
-            eventService.eventClick('#btnSettingsExportData', (e) => {
-                let resHisto = historyService.getHistory();
+            eventService.eventClick('#btnSettingsExportSessions', () => {
                 let resSession = sessionService.getSavedSessions();
-                let resSettings = settingsService.getSettings();
-                $.when(resHisto, resSession, resSettings).done((dataHisto, dataSession, dataSettings) => {
-                    let data = new Map();
-                    data.set('dataSession', dataSession);
-                    data.set('dataHisto', dataHisto);
-                    data.set('dataSettings', Array.from(dataSettings));
-                    let stringData = btoa(JSON.stringify(Array.from(data)));
-                    this.renderExportData(stringData);
+                resSession.done((dataSession) => {
+                    let stringData = btoa(JSON.stringify(dataSession));
+                    this.renderExportData(stringData, 'session');
+                });
+            });
+
+            eventService.eventClick('#btnSettingsExportHistory', () => {
+                let resHisto = historyService.getHistory();
+                resHisto.done((dataHisto) => {
+                    let stringData = btoa(JSON.stringify(dataHisto));
+                    this.renderExportData(stringData, 'histo');
                 });
             });
             
             $('#dlgCreationDialog')[0].showModal();
         });
     }
-    renderExportData(data) {
+    renderExportData(data, exportType) {
         let html = "";
-        html += "<p><textarea id='txtImportExportData' rows='15' cols='30'>" + data + "</textarea></p>";
+        html += "<p><textarea id='txtImportExportData' rows='15' cols='35' data-export-type='" + exportType + "'>" + data + "</textarea></p>";
         html += "<p><button class='btnDialog' id='btnImportData'>Import</button></p><hr/>";       
         $('#spanCreationDialogMessage').html(html);
-        eventService.eventClick('#btnImportData', (e) => {
+        eventService.eventClick('#btnImportData', () => {
             try {
                 let val = $('#txtImportExportData').val();
-                let valMap = new Map(JSON.parse(atob(val)));
-                let dataSession = valMap.get('dataSession');
-                let dataHisto = valMap.get('dataHisto');
-                let dataSettings = new Map(valMap.get('dataSettings'));
-               
-                let resHisto = historyService.restoreHistory(dataHisto);
-                let resSession = sessionService.restoreSession(dataSession);
-                let resSettings = settingsService.restoreSettings(dataSettings);
+                let exType = $('#txtImportExportData').data('export-type');
+                let data = JSON.parse(atob(val));
                 
-                $.when(resHisto, resSession, resSettings).done(() => {
+                let res=null;
+                if (exType=='session') res = sessionService.restoreSession(data); 
+                if (exType=='histo') res = historyService.restoreHistory(data);
+
+                res.done(() => {
                     $('#dlgCreationDialog')[0].close();
                 });
             }

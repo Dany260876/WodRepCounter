@@ -24,18 +24,19 @@ export default class reportSession {
     }
     initEvents() {
         eventService.eventClick('#btncloseReport', () => {
-            $('#divReportSession').html('');
-            $('#divReportSession').removeClass('visible');
-            $('#divReportSession').addClass('hidden');
+            this.hide();
             new createSession().render();
         });
 
         eventService.eventClick('#btnShowHistory', () => {
-            $('#divReportSession').html('');
-            $('#divReportSession').removeClass('visible');
-            $('#divReportSession').addClass('hidden');
+            this.hide();
             new historySession().render();
         });
+    }
+    hide() {
+        $('#divReportSession').html('');
+        $('#divReportSession').removeClass('visible');
+        $('#divReportSession').addClass('hidden');
     }
     addSessionToHistory() {
         historyService.addSession(this.session);
@@ -46,16 +47,17 @@ export default class reportSession {
 
         // Get stats
         let stats = sessionService.getSessionStats(this.session);
-        if (stats.actionsDetail.length>0) {
-            htmlActions += "<table class='tblReportActionsDetails'>";
+        if (stats.actionsDetail.size>0) {
             htmlActions += "<tr><td>Action</td><td>Total reps</td></tr>";
-            stats.actionsDetail.forEach((d) => {
-                htmlActions += "<tr>";
-                htmlActions += "<td>" + d.name + "</td>";
-                htmlActions += "<td>" + d.reps + "</td>";
-                htmlActions += "</tr>";
+            stats.actionsDetail.forEach((data, name) => {
+                htmlActions += "<tr class='trReportActionTitle' colspan=2><td>" + name + "</td></tr>";
+                data.forEach((d) => {
+                    htmlActions += "<tr>";
+                    htmlActions += "<td>" + d.name + "</td>";
+                    htmlActions += "<td>" + d.reps + "</td>";
+                    htmlActions += "</tr>";
+                });
             });
-            htmlActions += "</table>";
         }
 
         // build content
@@ -66,9 +68,10 @@ export default class reportSession {
             '[SESSION_WORKOUTS]': stats.workouts,
             '[SESSION_ACTIONS]': stats.actions,
             '[SESSION_PAUSE]': formattingService.getDurationSeconds(stats.pause),
-            '[ACTION_DETAILS]': htmlActions
+            '[ACTION_DETAILS]': htmlActions,
+            '[SESSION_WDURATION]': formattingService.getDurationSeconds(this.session.duration-stats.pause)
         };
-        return htmlContent.replace(/\[(SESSION_NAME|SESSION_DATE|SESSION_DURATION|SESSION_WORKOUTS|SESSION_ACTIONS|SESSION_PAUSE|ACTION_DETAILS)\]/g, 
+        return htmlContent.replace(/\[(SESSION_NAME|SESSION_DATE|SESSION_DURATION|SESSION_WORKOUTS|SESSION_ACTIONS|SESSION_PAUSE|ACTION_DETAILS|SESSION_WDURATION)\]/g, 
             matched => values[matched]
         );       
     }

@@ -773,7 +773,8 @@ select:focus {
 /* Chiffres clés en grand format */
 .spanReportWorkouts,
 .spanReportActions,
-.spanReportPause {
+.spanReportPause,
+.spanReportWDuration {
   display: block;
   font-size: 1.3rem;
   font-weight: 700;
@@ -797,6 +798,12 @@ select:focus {
   width: 100%;
   border-collapse: collapse;
   margin-top: 0.75rem;
+}
+
+.trReportActionTitle td {
+    text-align: left !important;
+    color: var(--text-main) !important;
+    font-weight: 700 !important;
 }
 
 .tblReportActionsDetails tr {
@@ -976,11 +983,11 @@ select:focus {
   background: #f69c9c;
 }
 
-#btnSettingsExportData, #btnImportData {
+#btnSettingsExportSessions, #btnImportData {
   background: #16a34a;
   color: #ffffff;
 }
-#btnSettingsExportData:hover, #btnImportData:hover {
+#btnSettingsExportSessions:hover, #btnImportData:hover {
   background: #69d390;
 }
 

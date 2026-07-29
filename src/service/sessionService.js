@@ -73,15 +73,16 @@ export default class sessionService {
         result.workouts = 0;
         result.actions = 0;
         result.pause = 0;
-        result.actionsDetail = [];
+        result.actionsDetail = new Map();
         
         session.workoutList.forEach((workout) => {
             result.workouts++;
             let wReps = workout.reps*1;
+            let actionsStats = [];
             workout.items.forEach((item) => {
                 if (item.type=='ACTION') {
-                    result.actionsDetail.push({
-                        'name':item.name,
+                    actionsStats.push({
+                        'name':item.name ,
                         'reps':item.reps * wReps
                     });
                     result.actions++;
@@ -90,6 +91,7 @@ export default class sessionService {
                     result.pause += item.duration * wReps;
                 }
             });
+            result.actionsDetail.set(workout.name, actionsStats);
         });
 
         return result;
@@ -184,7 +186,7 @@ export default class sessionService {
                 });
             }
             let resultSet = new Set(resultArray.flat().toSorted());
-            if (resultSet.has('pause')) resultSet.delete('pause');
+            if (resultSet.has('Pause')) resultSet.delete('Pause');
             res.resolve(resultSet);
         }).catch((err) => {
             res.reject(err);

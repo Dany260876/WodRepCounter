@@ -13,7 +13,10 @@ export default class formattingService {
                 return '0:0' + Math.floor(seconds);
         }
         else {
-            return minutes + ':' + remainder;
+            if (remainder>=10) 
+                return minutes + ':' + Math.floor(remainder);
+            else
+                return minutes + ':0' + Math.floor(remainder);
         }
     }
     static getFormattedString(strValue) {
