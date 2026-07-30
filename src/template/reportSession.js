@@ -4,6 +4,7 @@ import formattingService from '../service/formattingService';
 import eventService from '../service/eventService';
 import historyService from '../service/historyService';
 import sessionService from '../service/sessionService';
+import statisticsService from '../service/statisticsService';
 import createSession from './createSession';
 import historySession from './historySession';
 
@@ -46,7 +47,7 @@ export default class reportSession {
         let htmlActions = "";
 
         // Get stats
-        let stats = sessionService.getSessionStats(this.session);
+        let stats = statisticsService.getSessionStats(this.session);
         if (stats.actionsDetail.size>0) {
             htmlActions += "<tr><td>Action</td><td>Total reps</td></tr>";
             stats.actionsDetail.forEach((data, name) => {

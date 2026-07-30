@@ -40,7 +40,8 @@ export default class createSession {
         $('.btn-history').html(chartIconContent);
         $('.btn-settings').html(settingsIconContent);
         $('#divWorkoutList').data('session-name', '');
-        this.addNewWorkout();
+        this.initEvents();
+        this.setObjectsId();
     }
     initEvents() {
         eventService.eventClick('#btnAddWorkout', () => this.addNewWorkout());
@@ -183,11 +184,14 @@ export default class createSession {
         let trParent = $(selType).parents('.trAction');
         let spanUnite = $(trParent).find('.spanActionUnit');
         let tdName = $(trParent).find('.tdName');
+        let txtActionName = $(tdName).find('.txtActionName');
         if (selType.value=='ACTION') {
+            $(txtActionName).val('name');
             $(spanUnite).text('reps');
             $(tdName).show();
         }
         if (selType.value=='PAUSE') {
+            $(txtActionName).val('pause');
             $(spanUnite).text('seconds');
             $(tdName).hide();
         }
@@ -259,8 +263,14 @@ export default class createSession {
         sessionService.getSavedSessionById(id).done((session) => {
             if (session!=null) {
                
+                // set name
+                let currentName = $('#divWorkoutList').data('session-name');
+                if (currentName=='')
+                    $('#divWorkoutList').data('session-name', session.name);
+                else
+                    $('#divWorkoutList').data('session-name', 'Session - ' + new Date().toLocaleDateString());
+
                 // build new content
-                $('#divWorkoutList').data('session-name', session.name);
                 session.workoutList.forEach((obj) => {
                     // Add blank workout
                     $('.detWorkout').removeAttr('open');

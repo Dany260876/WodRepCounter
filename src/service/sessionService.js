@@ -66,36 +66,6 @@ export default class sessionService {
         });
         return res.promise();
     }
-    static getSessionStats(session) {
-        let result = {};
-
-        result.date = new Date(session.startDate);
-        result.workouts = 0;
-        result.actions = 0;
-        result.pause = 0;
-        result.actionsDetail = new Map();
-        
-        session.workoutList.forEach((workout) => {
-            result.workouts++;
-            let wReps = workout.reps*1;
-            let actionsStats = [];
-            workout.items.forEach((item) => {
-                if (item.type=='ACTION') {
-                    actionsStats.push({
-                        'name':item.name ,
-                        'reps':item.reps * wReps
-                    });
-                    result.actions++;
-                }
-                else {
-                    result.pause += item.duration * wReps;
-                }
-            });
-            result.actionsDetail.set(workout.name, actionsStats);
-        });
-
-        return result;
-    }
     static getSavedSessions() {
         const res = $.Deferred();
         // get saved sessions
