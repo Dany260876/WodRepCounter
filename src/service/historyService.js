@@ -19,7 +19,21 @@ export default class historyService {
         });
         return res.promise();
     }
-   static getHistory() {
+    static getSessionByDate(date) {
+        const res = $.Deferred();
+        let stringDate = date.toLocaleDateString();
+        localforage.getItem('historySession').then((values) => { 
+            values.forEach((val) => {
+                if (new Date(val.startDate).toLocaleDateString()==stringDate) {
+                    res.resolve(val);
+                    return;
+                }
+            });
+            res.resolve(null);
+        });
+        return res.promise();
+    }
+    static getHistory() {
         const res = $.Deferred();
         // get sessions history
         localforage.getItem('historySession').then((value) => {

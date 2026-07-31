@@ -104,7 +104,15 @@ export default class historySession {
                 },
                 inline: true,
                 multipleDates: true,
-                onBeforeSelect() {
+                onBeforeSelect({date, datepicker}) {
+                    historyService.getSessionByDate(date).done((session) => {
+                        if (session) {
+                            $('#divHistorySession').html('');
+                            $('#divHistorySession').removeClass('visible');
+                            $('#divHistorySession').addClass('hidden');
+                            new reportSession(session, true).render(); 
+                        }
+                    });
                     return false;
                 },
                 onRenderCell({date, cellType}) {
