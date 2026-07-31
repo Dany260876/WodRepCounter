@@ -1,4 +1,4 @@
-import { $ } from 'jquery';
+import $ from 'jquery';
 import htmlContent from './reportSession.html?raw';
 import formattingService from '../service/formattingService';
 import eventService from '../service/eventService';

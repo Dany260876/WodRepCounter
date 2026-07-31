@@ -1,4 +1,4 @@
-import { $ } from 'jquery';
+import $ from 'jquery';
 import localforage from 'localforage';
 
 import session from '../class/session'

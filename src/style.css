@@ -1200,7 +1200,8 @@ select:focus {
 
 /* --- Cartes Conteneurs (Global Stats & Top Actions) --- */
 #divHistory .divStatsGlobal,
-#divHistory .divStatsTopActions {
+#divHistory .divStatsTopActions,
+#divHistory .divStatsCalendar {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
@@ -1295,7 +1296,7 @@ select:focus {
   color: var(--primary);
 }
 
-.divStatsTopActions {
+.divStatsTopActions, .divStatsCalendar {
   margin-top: 10px;
 }
 
@@ -1310,3 +1311,4 @@ select:focus {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+

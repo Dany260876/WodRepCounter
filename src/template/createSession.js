@@ -1,4 +1,5 @@
-import { $ } from 'jquery';
+import $ from 'jquery';
+import LZString from 'lz-string';
 
 import saveIconContent from '../assets/save.svg?raw';
 import loadIconContent from '../assets/load.svg?raw';
@@ -443,7 +444,7 @@ export default class createSession {
             eventService.eventClick('#btnSettingsExportSessions', () => {
                 let resSession = sessionService.getSavedSessions();
                 resSession.done((dataSession) => {
-                    let stringData = btoa(JSON.stringify(dataSession));
+                    let stringData = LZString.compressToBase64(JSON.stringify(dataSession));
                     this.renderExportData(stringData, 'session');
                 });
             });
@@ -451,7 +452,7 @@ export default class createSession {
             eventService.eventClick('#btnSettingsExportHistory', () => {
                 let resHisto = historyService.getHistory();
                 resHisto.done((dataHisto) => {
-                    let stringData = btoa(JSON.stringify(dataHisto));
+                    let stringData = LZString.compressToBase64(JSON.stringify(dataHisto));
                     this.renderExportData(stringData, 'histo');
                 });
             });
@@ -468,7 +469,7 @@ export default class createSession {
             try {
                 let val = $('#txtImportExportData').val();
                 let exType = $('#txtImportExportData').data('export-type');
-                let data = JSON.parse(atob(val));
+                let data = JSON.parse(LZString.decompressFromBase64(val));
                 
                 let res=null;
                 if (exType=='session') res = sessionService.restoreSession(data); 

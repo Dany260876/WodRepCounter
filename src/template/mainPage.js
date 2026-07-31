@@ -1,4 +1,4 @@
-import { $ } from 'jquery'
+import $ from 'jquery'
 import htmlMainPage from './mainPage.html?raw'
 import createSession from './createSession'
 

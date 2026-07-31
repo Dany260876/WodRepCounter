@@ -1,4 +1,8 @@
-import { $ } from 'jquery';
+import $ from 'jquery';
+
+import AirDatepicker from 'air-datepicker';
+import 'air-datepicker/air-datepicker.css';
+
 import htmlContent from './historySession.html?raw';
 import eventService from '../service/eventService';
 import historyService from '../service/historyService';
@@ -64,6 +68,10 @@ export default class historySession {
             html += "<li>Total Work<span class='liStatResult'>" + formattingService.getDurationSeconds(stats.totalWorkingTime) + "</span></li>";
             html += "</ul>";
             html += "</div>";
+            
+            html += "<div class='divStatsCalendar'><span class='spanStatsTitle'>Session days</span>";
+            html += "<div id='divCalendar'></div>";
+            html += "</div>";
 
             html += "<div class='divStatsTopActions'><span class='spanStatsTitle'>Top 10 Actions</span>";
             html += "<table>";
@@ -77,9 +85,43 @@ export default class historySession {
             html += "</div>";
 
             $("#divHistory").html(html);
-
             $(".spanHistoryTitle").text('Statistics');
             $('#btnStatistics').hide();
+
+            // build calendar
+            new AirDatepicker('#divCalendar', {
+                locale: {
+                    days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                    daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    daysMin: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                    months: ['January','February','March','April','May','June', 'July','August','September','October','November','December'],
+                    monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    today: 'Today',
+                    clear: 'Clear',
+                    dateFormat: 'mm/dd/yyyy',
+                    timeFormat: 'hh:ii aa',
+                    firstDay: 0
+                },
+                inline: true,
+                multipleDates: true,
+                onBeforeSelect() {
+                    return false;
+                },
+                onRenderCell({date, cellType}) {
+                    let found = false;
+                    stats.sessionDays.forEach((d) => {
+                        if (!found) found = (d.toDateString() == date.toDateString());
+                    });
+                    if (found) {
+                        return {
+                            html: '&#127942',
+                            classes: '-emoji-cell-'
+                        };
+                    }
+                }
+            });
+            $(".air-datepicker").css('width','100%');
+
             this.initEvents();
         });
     }

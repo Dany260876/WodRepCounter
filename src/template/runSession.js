@@ -1,4 +1,4 @@
-import { $ } from 'jquery';
+import $ from 'jquery';
 import htmlContent from './runSession.html?raw';
 import iconEndSession from '../assets/trophy.svg?raw';
 import audioClickWav from '../assets/click.wav';

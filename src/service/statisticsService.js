@@ -20,7 +20,7 @@ export default class statisticsService {
             workout.items.forEach((item) => {
                 if (item.type=='ACTION') {
                     actionsStats.push({
-                        'name':item.name ,
+                        'name':item.name.trim() ,
                         'reps':item.reps * wReps
                     });
                     result.actions++;
@@ -43,19 +43,21 @@ export default class statisticsService {
             result.totalPause = 0;
             result.totalActions = 0;
             result.totalWorkouts = 0;
+            result.sessionDays = [];
 
             // build stats
             let actionsStats = new Map();
             sessions.forEach((session) => {
-                let sessionStats = statisticsService.getSessionStats(session); 
+                let sessionStats = statisticsService.getSessionStats(session);
                 result.totalDuration += sessionStats.duration;
                 result.totalPause += sessionStats.pause;
                 result.totalWorkingTime += sessionStats.duration - sessionStats.pause;
                 result.totalWorkouts += sessionStats.workouts;
                 result.totalActions += sessionStats.actions;
+                result.sessionDays.push(new Date(session.startDate));
                 sessionStats.actionsDetail.forEach((actions, workoutName) => {
                     actions.forEach((action) => {
-                        let name = action.name;
+                        let name = action.name.trim();
                         let reps = action.reps;
                         if (name!='') {
                             if (actionsStats.has(name)) {
