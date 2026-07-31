@@ -15,6 +15,7 @@ import htmlBlankWorkout from './component/blankWorkout.html?raw';
 import htmlNewAction from './component/newAction.html?raw';
 import htmlDlgSaveSession from './component/dialogSaveSession.html?raw';
 import htmlDlgConfiguration from './component/dialogConfig.html?raw';
+import htmlStartupPage from './component/startupPage.html?raw';
 
 import sessionService from '../service/sessionService';
 import eventService from '../service/eventService';
@@ -30,6 +31,7 @@ export default class createSession {
         sessionService.getActionKeywords().done((words) => {
             this.actionKeywords = words;
             this.initPage();
+            this.showStartUpPage();
         });
     }
     initPage() {
@@ -62,6 +64,13 @@ export default class createSession {
         eventService.eventFocus('.txtWorkoutName', (e) => this.clearTextField(e));
         eventService.eventClick(window, () => this.hideActionMenu());
     }
+    showStartUpPage() {
+        let html = "";
+        html += "<div id='divStartupPage'>";
+        html += htmlStartupPage.replace('[IMPORT_ICON]', loadIconContent);
+        html += "</div>";
+        $('#divWorkoutList').html(html);
+    }
     getWorkoutHtml(workout) {
         let name = 'workout name';
         let value = '5';
@@ -82,6 +91,7 @@ export default class createSession {
         if ((value=='name') || (value=='workout name')) $(e.currentTarget).val('');
     }
     addNewWorkout() {
+        $('#divStartupPage').remove();
         $('.detWorkout').removeAttr('open');
         $('#divWorkoutList').append(this.getWorkoutHtml(null));
         $('.spanDeleteWorkout').html(deleteIconContent);
@@ -263,7 +273,8 @@ export default class createSession {
         
         sessionService.getSavedSessionById(id).done((session) => {
             if (session!=null) {
-               
+                $('#divStartupPage').remove();
+                
                 // set name
                 let currentName = $('#divWorkoutList').data('session-name');
                 if (currentName=='')

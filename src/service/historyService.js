@@ -23,12 +23,14 @@ export default class historyService {
         const res = $.Deferred();
         let stringDate = date.toLocaleDateString();
         localforage.getItem('historySession').then((values) => { 
-            values.forEach((val) => {
-                if (new Date(val.startDate).toLocaleDateString()==stringDate) {
-                    res.resolve(val);
-                    return;
-                }
-            });
+            if (values) {
+                values.forEach((val) => {
+                    if (new Date(val.startDate).toLocaleDateString()==stringDate) {
+                        res.resolve(val);
+                        return;
+                    }
+                });
+            }
             res.resolve(null);
         });
         return res.promise();

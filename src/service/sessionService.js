@@ -14,14 +14,6 @@ export default class sessionService {
     constructor() {
         this.session = new session();
     }
-    static createWorkout(name, reps) {
-        return new workout(name, reps);
-    }
-    static createAction(type, name, value) {
-        if (type.toUpperCase()=='ACTION') return new action(name, value);
-        if (type.toUpperCase()=='PAUSE') return new pause(value);
-        return {};
-    }
     addWorkout(workout) {
         this.session.addWorkout(workout);
     }
@@ -56,6 +48,14 @@ export default class sessionService {
             res.reject('invalid name');
 
         return res.promise();
+    }
+    static createWorkout(name, reps) {
+        return new workout(name, reps);
+    }
+    static createAction(type, name, value) {
+        if (type.toUpperCase()=='ACTION') return new action(name, value);
+        if (type.toUpperCase()=='PAUSE') return new pause(value);
+        return {};
     }
     static restoreSession(values) {
         const res = $.Deferred();

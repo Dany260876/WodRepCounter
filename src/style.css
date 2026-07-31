@@ -1312,3 +1312,14 @@ select:focus {
   }
 }
 
+#divStartupPage {
+    width: 100%;
+    height: 300px;
+    text-align: center;
+    vertical-align: middle;
+    color: #69689d;
+}
+
+.pStartupTitle {
+  font-weight: 600;
+}
