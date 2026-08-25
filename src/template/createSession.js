@@ -65,11 +65,16 @@ export default class createSession {
         eventService.eventClick(window, () => this.hideActionMenu());
     }
     showStartUpPage() {
+        let startupDisplayed = window.sessionStorage.getItem('startupDisplayed');
+        if (startupDisplayed == 'yes') return;
+        window.sessionStorage.setItem('startupDisplayed', 'yes');
+
         let html = "";
         html += "<div id='divStartupPage'>";
         html += htmlStartupPage.replace('[IMPORT_ICON]', loadIconContent);
         html += "</div>";
-        $('#divWorkoutList').html(html);
+        $('#spanDialogContent').html(html);
+        $('#mainDialog')[0].showModal();
     }
     getWorkoutHtml(workout) {
         let name = 'workout name';
@@ -220,7 +225,7 @@ export default class createSession {
     setObjectsId() {
         let id = new Date().getTime();
         $('input, select').each((i,obj) => { 
-            if ($(obj).prop('id')=='') $(obj).prop('id', obj.type+'-'+id+'-'+i);
+            if ($(obj).prop('id')=='') $(obj).prop('id', obj.type + '-' + id + '-' + i);
         });
     }
     buildSessionFromDOM(service) {
